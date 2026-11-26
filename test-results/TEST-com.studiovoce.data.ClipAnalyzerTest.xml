@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.data.ClipAnalyzerTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:22" hostname="runnervm0hi8g" time="0.341">
+  <properties/>
+  <testcase name="al primo calcolo le misure sono quelle dell'app" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.128"/>
+  <testcase name="le formanti del foglio si conservano" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.025"/>
+  <testcase name="serve calcolare se la riga non c'e o non ha la curva" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.001"/>
+  <testcase name="le misure del foglio non vengono sovrascritte" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.036"/>
+  <testcase name="su un seno a 200 Hz le misure dicono 200 Hz" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.026"/>
+  <testcase name="la curva la mette sempre l'app" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.027"/>
+  <testcase name="una clip troppo corta non manda in errore" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.001"/>
+  <testcase name="la durata e quella del file, non quella della curva" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.042"/>
+  <testcase name="la curva salvata si rilegge e torna la stessa" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.024"/>
+  <testcase name="nel silenzio non si inventano misure" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.002"/>
+  <testcase name="una clip mezza muta ha circa meta del parlato" classname="com.studiovoce.data.ClipAnalyzerTest" time="0.024"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

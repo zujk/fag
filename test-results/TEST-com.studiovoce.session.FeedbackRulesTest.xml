@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.session.FeedbackRulesTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.008">
+  <properties/>
+  <testcase name="al massimo due messaggi, nell'ordine di priorita" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="codici assenti o sconosciuti non fanno errore" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="non si restituisce mai una lista vuota" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="escursione poca quando la tua melodia si muove meno della sua" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="i codici vanno nel database e tornano" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="una registrazione muta non e una ripetizione vicina" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="escursione troppa quando la tua melodia si muove troppo" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="durata corta quando la ripetizione e piu svelta della clip" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="la finestra della chiusura decide cosa si guarda" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="se scendono entrambe non c'e niente da dire sulla chiusura" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="durata lunga quando la ripetizione trascina" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="una clip senza misure non fa giudicare la ripetizione" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="se nessuna regola scatta si dice che la forma e vicina" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="un solo frame sonoro non basta per giudicare" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="cambiare la soglia cambia il giudizio" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="la chiusura scatta se la sua scende e la tua sale" classname="com.studiovoce.session.FeedbackRulesTest" time="0.001"/>
+  <testcase name="un solo messaggio se si chiede un solo messaggio" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <testcase name="ogni codice ha una frase in italiano" classname="com.studiovoce.session.FeedbackRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

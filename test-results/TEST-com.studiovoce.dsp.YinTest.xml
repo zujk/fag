@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.dsp.YinTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.307">
+  <properties/>
+  <testcase name="nel silenzio non trova nessuna altezza" classname="com.studiovoce.dsp.YinTest" time="0.002"/>
+  <testcase name="su seni a 100, 180 e 250 Hz l'errore sta sotto l'uno per cento" classname="com.studiovoce.dsp.YinTest" time="0.082"/>
+  <testcase name="distingue la parte muta da quella sonora" classname="com.studiovoce.dsp.YinTest" time="0.017"/>
+  <testcase name="sottocampionare taglia le frequenze che non entrano" classname="com.studiovoce.dsp.YinTest" time="0.006"/>
+  <testcase name="su un'onda ricca di armoniche non sbaglia l'ottava" classname="com.studiovoce.dsp.YinTest" time="0.035"/>
+  <testcase name="sottocampionare dimezza i campioni e conserva l'altezza" classname="com.studiovoce.dsp.YinTest" time="0.022"/>
+  <testcase name="un'altezza fuori dall'intervallo cercato non viene inventata" classname="com.studiovoce.dsp.YinTest" time="0.023"/>
+  <testcase name="nel rumore quasi tutti i frame restano muti" classname="com.studiovoce.dsp.YinTest" time="0.028"/>
+  <testcase name="il fattore di sottocampionamento porta vicino a 22 kHz" classname="com.studiovoce.dsp.YinTest" time="0.0"/>
+  <testcase name="il tempo di un frame e il centro della sua finestra" classname="com.studiovoce.dsp.YinTest" time="0.022"/>
+  <testcase name="su un seno che scivola da 150 a 250 Hz la curva e monotona" classname="com.studiovoce.dsp.YinTest" time="0.048"/>
+  <testcase name="funziona anche su un file a 22050 Hz" classname="com.studiovoce.dsp.YinTest" time="0.021"/>
+  <testcase name="un segnale piu corto di una finestra da una curva vuota" classname="com.studiovoce.dsp.YinTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

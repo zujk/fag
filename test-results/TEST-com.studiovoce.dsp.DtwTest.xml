@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.dsp.DtwTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.023">
+  <properties/>
+  <testcase name="i frame muti non si confrontano come se fossero zero" classname="com.studiovoce.dsp.DtwTest" time="0.002"/>
+  <testcase name="due curve vuote danno un allineamento vuoto" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <testcase name="il percorso parte dall'inizio e finisce alla fine" classname="com.studiovoce.dsp.DtwTest" time="0.001"/>
+  <testcase name="uno scarto costante di tre semitoni costa tre" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <testcase name="due curve identiche si allineano in diagonale" classname="com.studiovoce.dsp.DtwTest" time="0.001"/>
+  <testcase name="il costo e la media per coppia, non la somma" classname="com.studiovoce.dsp.DtwTest" time="0.002"/>
+  <testcase name="una curva di un solo frame si allinea con tutto" classname="com.studiovoce.dsp.DtwTest" time="0.001"/>
+  <testcase name="una curva dilatata nel tempo si riporta sulla forma originale" classname="com.studiovoce.dsp.DtwTest" time="0.008"/>
+  <testcase name="riportare una curva lascia muti i frame senza corrispondenza" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <testcase name="riportare fa la media dei frame che cadono sullo stesso istante" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <testcase name="se una curva e vuota non c'e niente da allineare" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <testcase name="il percorso non torna mai indietro e non salta" classname="com.studiovoce.dsp.DtwTest" time="0.005"/>
+  <testcase name="due curve mute fra loro non costano niente" classname="com.studiovoce.dsp.DtwTest" time="0.001"/>
+  <testcase name="su una curva che sale sempre uno scarto di altezza somiglia a uno di tempo" classname="com.studiovoce.dsp.DtwTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

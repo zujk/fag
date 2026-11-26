@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.session.SessionPlannerTest" tests="32" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.023">
+  <properties/>
+  <testcase name="la fase suggerita non va mai fuori scala" classname="com.studiovoce.session.SessionPlannerTest" time="0.002"/>
+  <testcase name="senza ordine delle categorie il ripasso non ha preferenze" classname="com.studiovoce.session.SessionPlannerTest" time="0.002"/>
+  <testcase name="due volte affaticata e la sessione successiva e leggera" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="fino alla settimana 8 la sessione contiene anche gli esercizi di fase 1" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="nella fase 1 le clip si ascoltano e non si ripetono" classname="com.studiovoce.session.SessionPlannerTest" time="0.002"/>
+  <testcase name="il riscaldamento sta nei due minuti" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="ogni sessione finisce con la domanda sulla fatica" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="una clip non ancora scaduta non entra" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la fase 3 finisce con l'intervista libera" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="le clip nascoste o sospette non entrano nella sessione" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la fase suggerita non torna mai indietro" classname="com.studiovoce.session.SessionPlannerTest" time="0.004"/>
+  <testcase name="l'avviso parla di logopedista senza allarmare" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="il ripasso prende al massimo sei clip" classname="com.studiovoce.session.SessionPlannerTest" time="0.002"/>
+  <testcase name="il piano riporta fase e settimana" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la fase suggerita segue le settimane" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="un esercizio piu lungo del tempo ci va comunque" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="una volta sola affaticata non riduce la sessione" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la categoria della settimana passa davanti nel ripasso" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="una fase fuori scala non manda la sessione per aria" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="un primo giorno nel futuro non da settimane negative" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la fase 4 e breve e chiede una missione" classname="com.studiovoce.session.SessionPlannerTest" time="0.002"/>
+  <testcase name="la fase 2 gira sulla categoria della settimana" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="nella fase 2 le clip si ripetono" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="senza un primo giorno siamo alla settimana uno" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la rotazione delle categorie torna all'inizio" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="nella fase 0 la sessione e solo la misura e la scheda bersaglio" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="affaticata e poi stanca non riduce la sessione" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="alla prima sessione non c'e storia della fatica" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="la settimana si conta dal primo giorno" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="ogni fase ha un nome leggibile" classname="com.studiovoce.session.SessionPlannerTest" time="0.001"/>
+  <testcase name="prima della settimana 4 la fase 2 parte dalla prima categoria" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <testcase name="senza esercizi la sessione ha comunque le clip e la domanda" classname="com.studiovoce.session.SessionPlannerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

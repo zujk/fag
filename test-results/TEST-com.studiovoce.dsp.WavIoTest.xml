@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.dsp.WavIoTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.183">
+  <properties/>
+  <testcase name="scrittura e rilettura conservano durata e forma" classname="com.studiovoce.dsp.WavIoTest" time="0.022"/>
+  <testcase name="l'intestazione e lunga 44 byte e dichiara le dimensioni giuste" classname="com.studiovoce.dsp.WavIoTest" time="0.001"/>
+  <testcase name="i chunk sconosciuti si saltano" classname="com.studiovoce.dsp.WavIoTest" time="0.003"/>
+  <testcase name="tutte le clip della voice bank sono mono 44100 a 16 bit" classname="com.studiovoce.dsp.WavIoTest" time="0.152"/>
+  <testcase name="stereo diventa mono mediando i canali" classname="com.studiovoce.dsp.WavIoTest" time="0.001"/>
+  <testcase name="un file che non e un WAV da un errore chiaro" classname="com.studiovoce.dsp.WavIoTest" time="0.001"/>
+  <testcase name="il writer incrementale chiude un file corretto" classname="com.studiovoce.dsp.WavIoTest" time="0.002"/>
+  <testcase name="un file troncato si legge comunque fino in fondo" classname="com.studiovoce.dsp.WavIoTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

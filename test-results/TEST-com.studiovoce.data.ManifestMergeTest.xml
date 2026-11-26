@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.data.ManifestMergeTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.023">
+  <properties/>
+  <testcase name="al primo import tutte le clip entrano con il livello del manifest" classname="com.studiovoce.data.ManifestMergeTest" time="0.004"/>
+  <testcase name="le clip sospette sono escluse finche Ziv non le conferma" classname="com.studiovoce.data.ManifestMergeTest" time="0.001"/>
+  <testcase name="il manifest della voice bank si legge e descrive 40 clip" classname="com.studiovoce.data.ManifestMergeTest" time="0.011"/>
+  <testcase name="un import successivo non crea ne tocca i progressi" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <testcase name="le misure calcolate dall'app non vengono cancellate dal foglio" classname="com.studiovoce.data.ManifestMergeTest" time="0.001"/>
+  <testcase name="il manifest dice che l'audio c'e ma il file manca comunque" classname="com.studiovoce.data.ManifestMergeTest" time="0.001"/>
+  <testcase name="un import bundled non sovrascrive una clip aggiunta da Ziv" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <testcase name="una clip senza audio si importa ma resta nascosta" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <testcase name="l'aggiornamento conserva data di creazione e conferma di Ziv" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <testcase name="i campi sconosciuti nel manifest non fanno errore" classname="com.studiovoce.data.ManifestMergeTest" time="0.002"/>
+  <testcase name="le misure del foglio arrivano nel database" classname="com.studiovoce.data.ManifestMergeTest" time="0.001"/>
+  <testcase name="una clip torna visibile quando l'audio arriva" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <testcase name="un import che non cambia niente non scrive niente" classname="com.studiovoce.data.ManifestMergeTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

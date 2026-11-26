@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.session.SpacedRepetitionTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.011">
+  <properties/>
+  <testcase name="la prossima scadenza si calcola dal giorno dato" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="gli intervalli seguono i livelli della spec" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="la categoria della settimana ha la precedenza" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="limite zero non restituisce nulla" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.001"/>
+  <testcase name="al primo avvio tutte le clip sono da fare e la selezione e stabile" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.006"/>
+  <testcase name="fra pari scadenza vengono prima i livelli bassi" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="salta le clip nascoste e quelle sospette" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.001"/>
+  <testcase name="una clip votata 4 non torna prima di sette giorni" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.001"/>
+  <testcase name="senza categoria della settimana non aggiunge clip non scadute" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="prende al massimo sei clip" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.001"/>
+  <testcase name="salta le clip non scadute" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <testcase name="se le scadute non bastano aggiunge clip nuove della categoria" classname="com.studiovoce.session.SpacedRepetitionTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

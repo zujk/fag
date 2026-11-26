@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.audio.SilenceDetectorTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:22" hostname="runnervm0hi8g" time="0.017">
+  <properties/>
+  <testcase name="il tetto di durata segue la lunghezza della clip" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.004"/>
+  <testcase name="il tetto di durata vince sempre" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.001"/>
+  <testcase name="una pausa breve in mezzo alla frase non ferma la registrazione" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.0"/>
+  <testcase name="si ferma dopo un secondo e mezzo di silenzio" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.002"/>
+  <testcase name="reset riporta tutto allo stato iniziale" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.0"/>
+  <testcase name="se non si sente niente si chiude a vuoto" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.001"/>
+  <testcase name="in un ambiente rumoroso la soglia si alza" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.0"/>
+  <testcase name="segna inizio e fine del parlato" classname="com.studiovoce.audio.SilenceDetectorTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.dsp.ContourTest" tests="22" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.016">
+  <properties/>
+  <testcase name="i valori sonori sopravvivono a un giro completo sulle frequenze" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <testcase name="la chiusura dice di quanto scende la fine della frase" classname="com.studiovoce.dsp.ContourTest" time="0.003"/>
+  <testcase name="un blob rovinato non passa per buono" classname="com.studiovoce.dsp.ContourTest" time="0.004"/>
+  <testcase name="una curva vuota non fa errore" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <testcase name="un solo frame sonoro da percentili tutti uguali" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="una curva senza parlato sonoro non ha mediana" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="una curva vuota si codifica e si rilegge" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <testcase name="le frequenze non valide si trattano come frame muti" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <testcase name="i frame muti restano muti e non contano" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="i percentili esistono anche in hertz" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="la curva va nel database e torna identica" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="i percentili si calcolano sui soli frame sonori" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="un'ottava sopra la mediana fa piu dodici semitoni" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="una curva piatta sta tutta a zero semitoni" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="una chiusura che sale da un valore positivo" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="la chiusura si misura dall'ultimo frame sonoro, non dalla fine del file" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <testcase name="un solo frame sonoro non ha una chiusura" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="i semitoni si ricavano anche da due frequenze qualsiasi" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="la durata del parlato ignora il silenzio davanti e dietro" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="senza parlato la durata del parlato e zero" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="la durata viene dal passo fra i frame" classname="com.studiovoce.dsp.ContourTest" time="0.0"/>
+  <testcase name="la codifica ha la dimensione attesa" classname="com.studiovoce.dsp.ContourTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

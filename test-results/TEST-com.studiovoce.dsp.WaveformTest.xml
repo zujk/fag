@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.dsp.WaveformTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.004">
+  <properties/>
+  <testcase name="piu bucket che campioni non manda in crisi" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <testcase name="il picco trova il massimo assoluto" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <testcase name="l'inviluppo segue dove sta il suono" classname="com.studiovoce.dsp.WaveformTest" time="0.001"/>
+  <testcase name="il valore efficace del silenzio e zero" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <testcase name="il valore efficace di un seno e l'ampiezza diviso radice di due" classname="com.studiovoce.dsp.WaveformTest" time="0.002"/>
+  <testcase name="l'inviluppo ha una colonna per bucket" classname="com.studiovoce.dsp.WaveformTest" time="0.001"/>
+  <testcase name="il valore efficace su PCM 16 bit coincide con quello su float" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <testcase name="il valore efficace si puo calcolare su una finestra" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <testcase name="un segnale vuoto da un inviluppo piatto" classname="com.studiovoce.dsp.WaveformTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

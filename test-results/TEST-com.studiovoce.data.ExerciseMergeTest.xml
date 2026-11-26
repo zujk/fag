@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.studiovoce.data.ExerciseMergeTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-26T16:27:23" hostname="runnervm0hi8g" time="0.09">
+  <properties/>
+  <testcase name="l'ordine delle categorie arriva pulito" classname="com.studiovoce.data.ExerciseMergeTest" time="0.021"/>
+  <testcase name="un id ripetuto entra una volta sola" classname="com.studiovoce.data.ExerciseMergeTest" time="0.01"/>
+  <testcase name="una durata impossibile si scarta" classname="com.studiovoce.data.ExerciseMergeTest" time="0.002"/>
+  <testcase name="le righe senza i campi obbligatori si scartano" classname="com.studiovoce.data.ExerciseMergeTest" time="0.001"/>
+  <testcase name="un esercizio valido diventa una riga del database" classname="com.studiovoce.data.ExerciseMergeTest" time="0.0"/>
+  <testcase name="il file degli esercizi degli asset e completo e sensato" classname="com.studiovoce.data.ExerciseMergeTest" time="0.028"/>
+  <testcase name="spazi di troppo non finiscono nel database" classname="com.studiovoce.data.ExerciseMergeTest" time="0.001"/>
+  <testcase name="un file vuoto non fa errore" classname="com.studiovoce.data.ExerciseMergeTest" time="0.0"/>
+  <testcase name="l'ordine delle categorie degli asset copre le categorie delle clip" classname="com.studiovoce.data.ExerciseMergeTest" time="0.021"/>
+  <testcase name="il file degli asset porta le domande della fase 0" classname="com.studiovoce.data.ExerciseMergeTest" time="0.001"/>
+  <testcase name="un audio guida vuoto vale come assente" classname="com.studiovoce.data.ExerciseMergeTest" time="0.0"/>
+  <testcase name="una fase negativa si scarta" classname="com.studiovoce.data.ExerciseMergeTest" time="0.001"/>
+  <testcase name="le domande della fase 0 arrivano pulite" classname="com.studiovoce.data.ExerciseMergeTest" time="0.0"/>
+  <testcase name="senza domande nel file le liste restano vuote" classname="com.studiovoce.data.ExerciseMergeTest" time="0.0"/>
+  <testcase name="i campi sconosciuti nel file non fanno errore" classname="com.studiovoce.data.ExerciseMergeTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
