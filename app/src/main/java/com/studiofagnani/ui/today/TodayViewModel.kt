@@ -6,13 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.studiofagnani.AppContainer
 import com.studiofagnani.data.ClipCard
 import com.studiofagnani.data.ClipRepository
+import com.studiofagnani.data.SettingsStore
+import com.studiofagnani.session.SessionPlanner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class TodayState(
     val caricamento: Boolean = true,
+    val fase: Int = 0,
+    val settimana: Int = 1,
+    val categoriaDellaSettimana: String? = null,
+    val ultimoControllo: Long? = null,
     val ripasso: List<ClipCard> = emptyList(),
     val scaduteTotali: Int = 0,
     val clipConAudio: Int = 0,
@@ -24,10 +31,13 @@ data class TodayState(
 }
 
 /**
- * La schermata "Oggi" della v0: il ripasso a intervalli (SPEC §5.4).
- * Riscaldamento, blocco della fase e domanda sulla fatica arrivano nella v1.
+ * La schermata "Oggi" (SPEC §7.1): un tasto grande per la sessione, e sotto fase,
+ * settimana, categoria della settimana e clip in ripasso.
  */
-class TodayViewModel(private val repo: ClipRepository) : ViewModel() {
+class TodayViewModel(
+    private val repo: ClipRepository,
+    private val settings: SettingsStore,
+) : ViewModel() {
 
     private val _state = MutableStateFlow(TodayState())
     val state: StateFlow<TodayState> = _state.asStateFlow()
@@ -36,8 +46,28 @@ class TodayViewModel(private val repo: ClipRepository) : ViewModel() {
         viewModelScope.launch {
             repo.cards.collect { tutte ->
                 val oggi = repo.today()
+                val impostazioni = settings.flow.first()
+                val settimana = SessionPlanner.settimanaDa(impostazioni.primoGiorno, oggi)
+                val ordine = impostazioni.ordineCategorie.ifEmpty {
+                    runCatching { repo.phase2CategoryOrder() }.getOrDefault(emptyList())
+                }
+                // La categoria della settimana la decide il pianificatore: qui si
+                // mostra, non si ricalcola, cosi' schermata e sessione non divergono.
+                val piano = SessionPlanner.plan(
+                    SessionPlanner.Stato(
+                        phase = impostazioni.fase,
+                        week = settimana,
+                        today = oggi,
+                        ordineCategorie = ordine,
+                    ),
+                )
+
                 _state.value = TodayState(
                     caricamento = false,
+                    fase = piano.phase,
+                    settimana = settimana,
+                    categoriaDellaSettimana = piano.categoriaDellaSettimana,
+                    ultimoControllo = repo.lastCheckpoint()?.createdAt,
                     ripasso = repo.reviewToday(tutte, today = oggi),
                     scaduteTotali = tutte.count { it.isDue(oggi) },
                     clipConAudio = tutte.count { !it.hidden },
@@ -53,7 +83,7 @@ class TodayViewModel(private val repo: ClipRepository) : ViewModel() {
         fun factory(container: AppContainer) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                TodayViewModel(container.repository) as T
+                TodayViewModel(container.repository, container.settings) as T
         }
     }
 }

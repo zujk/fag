@@ -121,6 +121,37 @@ class ExerciseMergeTest {
     }
 
     @Test
+    fun `le domande della fase 0 arrivano pulite`() {
+        val p = ExerciseMerge.plan(
+            ExercisesFile(
+                freeTalkQuestions = listOf(" Com'è andata? ", "", "   "),
+                fagnaniQuestions = listOf("Di che cosa si vergogna?"),
+            ),
+        )
+        assertEquals(listOf("Com'è andata?"), p.freeTalkQuestions)
+        assertEquals(listOf("Di che cosa si vergogna?"), p.fagnaniQuestions)
+    }
+
+    @Test
+    fun `senza domande nel file le liste restano vuote`() {
+        val p = ExerciseMerge.plan(ExercisesFile())
+        assertTrue(p.freeTalkQuestions.isEmpty())
+        assertTrue(p.fagnaniQuestions.isEmpty())
+    }
+
+    @Test
+    fun `il file degli asset porta le domande della fase 0`() {
+        val file = manifestJson.decodeFromString<ExercisesFile>(asset("exercises.json").readText())
+        val p = ExerciseMerge.plan(file)
+
+        assertTrue("servono domande per il minuto libero", p.freeTalkQuestions.size >= 3)
+        assertTrue("servono domande alla Fagnani", p.fagnaniQuestions.size >= 3)
+        for (d in p.freeTalkQuestions + p.fagnaniQuestions) {
+            assertTrue("domanda troppo lunga: $d", d.length <= 90)
+        }
+    }
+
+    @Test
     fun `i campi sconosciuti nel file non fanno errore`() {
         val json = """
             {

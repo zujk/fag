@@ -26,10 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.studiofagnani.ui.components.Avviso
 import com.studiofagnani.ui.theme.Spazi
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun TodayScreen(
     vm: TodayViewModel,
+    onIniziaSessione: () -> Unit,
     onIniziaRipasso: (List<String>) -> Unit,
     onVaiInLibreria: () -> Unit,
     modifier: Modifier = Modifier,
@@ -44,6 +47,18 @@ fun TodayScreen(
         verticalArrangement = Arrangement.spacedBy(Spazi.m),
     ) {
         Text("Oggi", style = MaterialTheme.typography.displaySmall)
+
+        if (!state.caricamento) {
+            Text(
+                buildString {
+                    append(if (state.fase == 0) "Misura di partenza" else "Fase ${state.fase}")
+                    append(" · settimana ${state.settimana}")
+                    state.categoriaDellaSettimana?.let { append(" · categoria: $it") }
+                },
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
 
         Text(
             when {
@@ -60,18 +75,26 @@ fun TodayScreen(
             style = MaterialTheme.typography.bodyLarge,
         )
 
-        // Un tasto grande, come chiede SPEC §2.1.
+        // Un tasto grande e uno solo, come chiede SPEC §2.1: l'app decide cosa
+        // fare in base a fase, giorno e ripasso.
         Button(
-            onClick = { onIniziaRipasso(state.coda) },
-            enabled = state.ripasso.isNotEmpty(),
+            onClick = onIniziaSessione,
+            enabled = !state.caricamento,
             modifier = Modifier.fillMaxWidth().height(88.dp),
         ) {
             Text(
-                "Inizia il ripasso di oggi",
+                "Inizia la sessione di oggi",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
             )
+        }
+
+        if (state.ripasso.isNotEmpty()) {
+            OutlinedButton(
+                onClick = { onIniziaRipasso(state.coda) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+            ) { Text("Solo il ripasso (${state.ripasso.size} clip)") }
         }
 
         OutlinedButton(
@@ -103,8 +126,9 @@ fun TodayScreen(
         }
 
         Text(
-            "Riscaldamento, esercizi della fase e domanda sulla fatica arrivano con la v1. " +
-                "Per ora la sessione è il ripasso delle clip.",
+            state.ultimoControllo?.let {
+                "Ultima misura: " + DateFormat.getDateInstance().format(Date(it))
+            } ?: "Nessuna misura di partenza: la fa la sessione della fase 0.",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

@@ -19,6 +19,11 @@ const val CONTEXT_HOME = "home"
 const val CONTEXT_TRAIN = "train"
 const val CONTEXT_CAR = "car"
 
+/** Risposte alla domanda di chiusura "Com'è la voce adesso?" (SPEC §5.2). */
+const val FATIGUE_OK = "ok"
+const val FATIGUE_TIRED = "tired"
+const val FATIGUE_STRAINED = "strained"
+
 @Entity(tableName = "clip")
 data class ClipEntity(
     @PrimaryKey val id: String,

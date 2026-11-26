@@ -121,4 +121,7 @@ interface ExerciseDao {
 
     @Query("SELECT * FROM exercise WHERE phase = :phase ORDER BY id")
     suspend fun forPhase(phase: Int): List<ExerciseEntity>
+
+    @Query("SELECT * FROM exercise WHERE id = :id")
+    suspend fun get(id: String): ExerciseEntity?
 }

@@ -5,6 +5,10 @@ import com.studiofagnani.data.db.AttemptEntity
 import com.studiofagnani.data.db.ClipEntity
 import com.studiofagnani.data.db.ClipProgressEntity
 import com.studiofagnani.data.db.CONTEXT_HOME
+import com.studiofagnani.data.db.CheckpointEntity
+import com.studiofagnani.data.db.FATIGUE_STRAINED
+import com.studiofagnani.data.db.FATIGUE_TIRED
+import com.studiofagnani.data.db.SessionEntity
 import com.studiofagnani.data.manifest.ExerciseImporter
 import com.studiofagnani.data.manifest.ManifestImporter
 import com.studiofagnani.dsp.Contour
@@ -13,6 +17,7 @@ import com.studiofagnani.dsp.WavIo
 import com.studiofagnani.dsp.Waveform
 import com.studiofagnani.session.FeedbackRules
 import com.studiofagnani.session.Riscontro
+import com.studiofagnani.session.SessionPlanner
 import com.studiofagnani.session.SpacedRepetition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +72,14 @@ class ClipRepository(
     suspend fun exercisesForPhase(phase: Int) = withContext(Dispatchers.IO) {
         db.exerciseDao().forPhase(phase)
     }
+
+    suspend fun exercise(id: String) = withContext(Dispatchers.IO) { db.exerciseDao().get(id) }
+
+    /**
+     * Il file degli esercizi cosi' com'e': serve per le cose che non stanno in
+     * tabella, cioe' l'ordine delle categorie e le domande della fase 0.
+     */
+    suspend fun exerciseFile() = withContext(Dispatchers.IO) { exerciseImporter.read() }
 
     /** La curva di altezza della clip, calcolata al primo uso (SPEC §4.4). */
     suspend fun contour(clip: ClipEntity) = analisi.contour(clip)
@@ -218,6 +231,91 @@ class ClipRepository(
             riscontri = FeedbackRules.evaluate(sua, tua),
             costo = allineamento.cost.takeIf { allineamento.size > 0 },
         )
+    }
+
+    // --- la sessione quotidiana (SPEC §5.2) ---------------------------------
+
+    /** Apre la riga della sessione: la chiusura arriva con la risposta sulla fatica. */
+    suspend fun startSession(
+        phase: Int,
+        mode: String = CONTEXT_HOME,
+        now: Long = System.currentTimeMillis(),
+    ): Long = withContext(Dispatchers.IO) {
+        db.sessionDao().insert(
+            SessionEntity(
+                startedAt = now,
+                endedAt = null,
+                phase = phase,
+                mode = mode,
+                fatigue = null,
+                note = null,
+            ),
+        )
+    }
+
+    suspend fun endSession(
+        sessionId: Long,
+        fatigue: String,
+        note: String? = null,
+        now: Long = System.currentTimeMillis(),
+    ) = withContext(Dispatchers.IO) {
+        val dao = db.sessionDao()
+        val righe = dao.recent(20)
+        val riga = righe.firstOrNull { it.id == sessionId } ?: return@withContext
+        dao.update(riga.copy(endedAt = now, fatigue = fatigue, note = note))
+    }
+
+    /**
+     * Le ultime risposte sulla fatica, la piu' recente per prima. Le sessioni senza
+     * risposta non contano: sono quelle lasciate a meta', non un "va bene".
+     */
+    suspend fun recentFatigue(quante: Int): List<SessionPlanner.Fatica> =
+        withContext(Dispatchers.IO) {
+            db.sessionDao().recent(quante * 3)
+                .mapNotNull { it.fatigue }
+                .map {
+                    when (it) {
+                        FATIGUE_STRAINED -> SessionPlanner.Fatica.AFFATICATA
+                        FATIGUE_TIRED -> SessionPlanner.Fatica.STANCA
+                        else -> SessionPlanner.Fatica.OK
+                    }
+                }
+                .take(quante)
+        }
+
+    suspend fun lastCheckpoint() = withContext(Dispatchers.IO) { db.checkpointDao().last() }
+
+    /** Salva la scheda bersaglio della fase 0 (SPEC §5.1). */
+    suspend fun saveCheckpoint(
+        readingWav: String?,
+        freeWav: String?,
+        misure: ClipAnalyzer.Misure?,
+        now: Long = System.currentTimeMillis(),
+    ): Long = withContext(Dispatchers.IO) {
+        db.checkpointDao().insert(
+            CheckpointEntity(
+                createdAt = now,
+                readingWav = readingWav,
+                freeWav = freeWav,
+                f0Med = misure?.f0Med,
+                f0P10 = misure?.f0P10,
+                f0P90 = misure?.f0P90,
+                // Formanti: servono le LPC, che la SPEC §10 mette nella v3.
+                f1Med = null,
+                f2Med = null,
+            ),
+        )
+    }
+
+    fun newCheckpointFile(tipo: String, now: Long = System.currentTimeMillis()) =
+        files.newCheckpointFile(tipo, now)
+
+    /** Misura una registrazione guidata. `null` se il file non si legge. */
+    suspend fun misura(file: File): ClipAnalyzer.Misure? = withContext(Dispatchers.IO) {
+        runCatching {
+            val audio = WavIo.read(file)
+            ClipAnalyzer.analyze(audio.samples, audio.sampleRate)
+        }.getOrNull()
     }
 
     suspend fun deleteAllRecordings(): Int = withContext(Dispatchers.IO) {

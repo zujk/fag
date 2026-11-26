@@ -19,6 +19,10 @@ import kotlinx.serialization.Serializable
 data class ExercisesFile(
     @SerialName("schema_version") val schemaVersion: Int = 1,
     @SerialName("phase2_category_order") val phase2CategoryOrder: List<String> = emptyList(),
+    /** Domande per il minuto di parlato libero (SPEC §5.1 e §5.6). */
+    @SerialName("free_talk_questions") val freeTalkQuestions: List<String> = emptyList(),
+    /** Domande "alla Fagnani" a cui rispondere nella fase 0. */
+    @SerialName("fagnani_questions") val fagnaniQuestions: List<String> = emptyList(),
     val exercises: List<ExerciseDto> = emptyList(),
 )
 
@@ -50,6 +54,8 @@ object ExerciseMerge {
         /** Id (o posizione, se manca l'id) di cio' che e' stato scartato, con il perche'. */
         val skipped: List<String> = emptyList(),
         val categoryOrder: List<String> = emptyList(),
+        val freeTalkQuestions: List<String> = emptyList(),
+        val fagnaniQuestions: List<String> = emptyList(),
     )
 
     fun plan(file: ExercisesFile): Plan {
@@ -87,6 +93,11 @@ object ExerciseMerge {
             toUpsert = buoni,
             skipped = scartati,
             categoryOrder = file.phase2CategoryOrder.map { it.trim() }.filter { it.isNotEmpty() },
+            freeTalkQuestions = pulisci(file.freeTalkQuestions),
+            fagnaniQuestions = pulisci(file.fagnaniQuestions),
         )
     }
+
+    private fun pulisci(righe: List<String>): List<String> =
+        righe.map { it.trim() }.filter { it.isNotEmpty() }
 }

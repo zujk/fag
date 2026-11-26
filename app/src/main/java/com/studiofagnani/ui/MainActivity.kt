@@ -38,6 +38,8 @@ import com.studiofagnani.ui.library.LibraryScreen
 import com.studiofagnani.ui.library.LibraryViewModel
 import com.studiofagnani.ui.practice.PracticeScreen
 import com.studiofagnani.ui.practice.PracticeViewModel
+import com.studiofagnani.ui.session.SessionScreen
+import com.studiofagnani.ui.session.SessionViewModel
 import com.studiofagnani.ui.theme.StudioFagnaniTheme
 import com.studiofagnani.ui.today.TodayScreen
 import com.studiofagnani.ui.today.TodayViewModel
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
 private object Rotte {
     const val OGGI = "oggi"
     const val LIBRERIA = "libreria"
+    const val SESSIONE = "sessione"
     const val CLIP = "clip/{clipId}"
     const val ESERCIZIO = "esercizio/{coda}"
 
@@ -83,6 +86,7 @@ private fun AppNav(container: AppContainer) {
                     title = {
                         Text(
                             when {
+                                rotta == Rotte.SESSIONE -> "Sessione di oggi"
                                 rotta?.startsWith("esercizio") == true -> "Esercizio"
                                 else -> "Clip"
                             },
@@ -125,10 +129,24 @@ private fun AppNav(container: AppContainer) {
                 val vm: TodayViewModel = viewModel(factory = TodayViewModel.factory(container))
                 TodayScreen(
                     vm = vm,
+                    onIniziaSessione = { nav.navigate(Rotte.SESSIONE) },
                     onIniziaRipasso = { coda ->
                         if (coda.isNotEmpty()) nav.navigate(Rotte.esercizio(coda))
                     },
                     onVaiInLibreria = { nav.navigateTab(Rotte.LIBRERIA) },
+                )
+            }
+
+            composable(Rotte.SESSIONE) {
+                // Il ViewModel e' legato a questa voce dello stack, quindi la
+                // sessione sopravvive all'andata e ritorno verso l'esercizio.
+                val vm: SessionViewModel = viewModel(factory = SessionViewModel.factory(container))
+                SessionScreen(
+                    vm = vm,
+                    onEsercizioSuClip = { coda ->
+                        if (coda.isNotEmpty()) nav.navigate(Rotte.esercizio(coda))
+                    },
+                    onFine = { nav.navigateUp() },
                 )
             }
 

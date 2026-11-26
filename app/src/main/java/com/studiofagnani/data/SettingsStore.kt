@@ -53,6 +53,16 @@ class SettingsStore(private val context: Context) {
         context.datastore.edit { it[PRIMO_GIORNO] = epochDay }
     }
 
+    /**
+     * Segna il primo giorno solo se non c'e' ancora: la settimana 1 e' quella in
+     * cui Ziv ha fatto la misura di partenza, e non si riscrive piu'.
+     */
+    suspend fun setPrimoGiornoSeMancante(epochDay: Long) {
+        context.datastore.edit { p ->
+            if (p[PRIMO_GIORNO] == null) p[PRIMO_GIORNO] = epochDay
+        }
+    }
+
     suspend fun setBranoFisso(testo: String) {
         context.datastore.edit { it[BRANO_FISSO] = testo }
     }

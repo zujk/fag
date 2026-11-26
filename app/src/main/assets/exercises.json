@@ -14,6 +14,24 @@
     "spontaneo-fuori-scena"
   ],
 
+  "_nota_domande": "Le domande della fase 0 e del controllo (SPEC §5.1 e §5.6): dati, non codice, così si cambiano senza ricompilare.",
+
+  "free_talk_questions": [
+    "Com'è andata la settimana?",
+    "Racconta un posto dove torneresti domani.",
+    "Che cosa ti ha fatto ridere di recente?",
+    "Spiega a qualcuno che non lo conosce un lavoro che sai fare.",
+    "Qual è una cosa che hai cambiato idea su, negli ultimi anni?"
+  ],
+
+  "fagnani_questions": [
+    "Le ha mai fatto comodo essere sottovalutata?",
+    "Di che cosa si vergogna?",
+    "Che prezzo ha pagato per arrivare dove è?",
+    "Si è mai venduta per qualcosa?",
+    "Che cosa non si perdona?"
+  ],
+
   "exercises": [
     {
       "id": "humming",
