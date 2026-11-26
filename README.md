@@ -78,7 +78,8 @@ https://github.com/zujk/fag/releases/download/apk-ultima/studio-fagnani.apk
 ```
 
 È firmato con la chiave di debug, quindi al primo avvio Android chiede di consentire
-l'installazione da questa origine. Pesa una cinquantina di MB, quasi tutti clip.
+l'installazione da questa origine. Pesa 73 MB: 37,6 di clip audio e 34,6 di codice
+(un APK di debug non passa da R8, quindi il dex non è ridotto).
 
 Lo stesso file sta anche fra gli artefatti della run, ma lì arriva dentro uno zip e
 serve l'accesso al repo: scomodo da aprire su Android.
