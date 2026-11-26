@@ -1,9 +1,5 @@
 package com.studiofagnani.ui.practice
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,12 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.studiofagnani.ui.components.Avviso
+import com.studiofagnani.ui.components.AvvisoMicrofonoNegato
+import com.studiofagnani.ui.components.PermessoMicrofono
+import com.studiofagnani.ui.components.rememberPermessoMicrofono
 import com.studiofagnani.ui.components.Etichetta
 import com.studiofagnani.ui.components.SelettoreLivello
 import com.studiofagnani.ui.components.CurvaAltezza
@@ -60,20 +57,8 @@ fun PracticeScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
-    var permesso by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED,
-        )
-    }
-    val chiediPermesso = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { ok ->
-        permesso = ok
-        if (ok) vm.registra()
-    }
+    val permesso = rememberPermessoMicrofono(onConcesso = vm::registra)
 
     LaunchedEffect(state.finita) { if (state.finita) onFine() }
 
@@ -166,10 +151,6 @@ fun PracticeScreen(
             Passo.RIPETI -> PassoRipeti(
                 state = state,
                 permesso = permesso,
-                onRegistra = {
-                    if (permesso) vm.registra()
-                    else chiediPermesso.launch(Manifest.permission.RECORD_AUDIO)
-                },
                 onFermaRegistrazione = vm::fermaRegistrazione,
             )
             Passo.CONFRONTA -> PassoConfronta(state, vm)
@@ -222,8 +203,7 @@ private fun PassoAscolta(state: PracticeState, vm: PracticeViewModel) {
 @Composable
 private fun PassoRipeti(
     state: PracticeState,
-    permesso: Boolean,
-    onRegistra: () -> Unit,
+    permesso: PermessoMicrofono,
     onFermaRegistrazione: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spazi.s)) {
@@ -233,13 +213,14 @@ private fun PassoRipeti(
             else "Un beep, poi parla. La registrazione si ferma da sola.",
             style = MaterialTheme.typography.bodyMedium,
         )
-        if (!permesso) {
+        if (!permesso.concesso) {
             Text(
                 "Serve il permesso del microfono: lo chiedo al primo tocco.",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        AvvisoMicrofonoNegato(permesso)
         AnimatedVisibility(state.registrando) {
             LinearProgressIndicator(
                 progress = { (state.livelloMicrofono * 8f).coerceIn(0f, 1f) },
@@ -248,7 +229,7 @@ private fun PassoRipeti(
         }
         BottoneGrande(
             testo = if (state.registrando) "Ho finito" else "Registra",
-            onClick = { if (state.registrando) onFermaRegistrazione() else onRegistra() },
+            onClick = { if (state.registrando) onFermaRegistrazione() else permesso.chiediEProcedi() },
         )
     }
 }

@@ -74,7 +74,11 @@ class VoiceRecorder(
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
         )
-        if (minBuffer <= 0) return@withContext Result.Failed("Microfono non disponibile")
+        if (minBuffer <= 0) {
+            return@withContext Result.Failed(
+                "Questo telefono non accetta la registrazione a $sampleRate Hz.",
+            )
+        }
 
         val record = try {
             AudioRecord(
@@ -91,7 +95,14 @@ class VoiceRecorder(
 
         if (record.state != AudioRecord.STATE_INITIALIZED) {
             record.release()
-            return@withContext Result.Failed("Microfono non inizializzato")
+            // Succede quando manca il permesso del microfono (le schermate lo
+            // chiedono prima, ma il messaggio deve dire cosa fare anche se un
+            // giorno qualcuno chiama qui senza passare da loro) oppure quando
+            // un'altra app lo sta tenendo occupato.
+            return@withContext Result.Failed(
+                "Il microfono non si è avviato. Controlla che Studio Fagnani abbia il " +
+                    "permesso del microfono e che non lo stia usando un'altra app.",
+            )
         }
 
         val detector = SilenceDetector(config)

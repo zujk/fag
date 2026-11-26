@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.studiofagnani.session.SessionPlanner
 import com.studiofagnani.ui.components.Avviso
+import com.studiofagnani.ui.components.AvvisoMicrofonoNegato
+import com.studiofagnani.ui.components.PermessoMicrofono
+import com.studiofagnani.ui.components.rememberPermessoMicrofono
 import com.studiofagnani.ui.components.StatoVuoto
 import com.studiofagnani.ui.theme.Spazi
 
@@ -46,6 +49,10 @@ fun SessionScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+
+    // Le registrazioni guidate della fase 0 hanno bisogno del microfono, e il
+    // permesso va chiesto a runtime: senza, AudioRecord nasce non inizializzato.
+    val permesso = rememberPermessoMicrofono(onConcesso = vm::registraGuidata)
 
     LaunchedEffect(state.finita) {
         if (state.finita) onFine()
@@ -109,7 +116,7 @@ fun SessionScreen(
                 SchedaAscolto(passo.clipId, vm)
 
             is SessionPlanner.Passo.RegistrazioneGuidata ->
-                SchedaRegistrazione(passo.tipo, state, vm)
+                SchedaRegistrazione(passo.tipo, state, vm, permesso)
 
             SessionPlanner.Passo.SchedaBersaglio -> SchedaBersaglio(state, vm)
 
@@ -185,6 +192,7 @@ private fun SchedaRegistrazione(
     tipo: SessionPlanner.Guidata,
     state: SessionState,
     vm: SessionViewModel,
+    permesso: PermessoMicrofono,
 ) {
     // Si rilegge a ogni cambio di `registrazioniFatte`, che e' nello stato:
     // la mappa dentro il ViewModel da sola non farebbe ricomporre niente.
@@ -211,7 +219,9 @@ private fun SchedaRegistrazione(
         }
 
         Button(
-            onClick = { if (state.registrando) vm.fermaRegistrazione() else vm.registraGuidata() },
+            onClick = {
+                if (state.registrando) vm.fermaRegistrazione() else permesso.chiediEProcedi()
+            },
             modifier = Modifier.fillMaxWidth().height(72.dp),
         ) {
             Text(
@@ -219,6 +229,8 @@ private fun SchedaRegistrazione(
                 style = MaterialTheme.typography.titleMedium,
             )
         }
+
+        AvvisoMicrofonoNegato(permesso)
 
         if (state.registrando) {
             Text(
