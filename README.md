@@ -15,6 +15,9 @@ Avvio:
 
 ## Stato: milestone v0
 
+Stato: **compila e i 50 test passano** (CI di GitHub, run #4: 0 errori di
+compilazione, 0 fallimenti, APK di debug prodotto).
+
 Fatto (SPEC §10, v0):
 
 - **Libreria** con le 40 clip, filtri per stato, categoria, contesto, energia e Livello.
@@ -54,17 +57,24 @@ asset non sono stati rigenerati.
 
 Serve **JDK 17** e l'**Android SDK** (API 35). Sulla macchina di sviluppo non ci sono,
 quindi a compilare ci pensa la CI di GitHub (`.github/workflows/android.yml`): usa il
-`gradle` del runner, quindi non serve tenere `gradle-wrapper.jar` nel repo, e carica come
-artefatti i rapporti dei test, l'APK e il wrapper generato.
+`gradle` e l'SDK già presenti sul runner, quindi non serve tenere `gradle-wrapper.jar`
+(un binario) nel repo.
+
+L'esito si legge in due modi. Come artefatti della run (rapporti dei test e APK), che
+però si scaricano solo con l'accesso al repo; oppure sul ramo **`ci-rapporto`**, che la
+CI riscrive a ogni giro con `RAPPORTO.md` (errori di compilazione e test falliti),
+`gradle.log` per intero e gli XML dei test:
+
+```
+https://raw.githubusercontent.com/zujk/fag/ci-rapporto/RAPPORTO.md
+```
 
 In locale, quando ci sarà un JDK:
 
 1. Installa Android Studio (porta JDK e SDK) oppure JDK 17 + command-line tools.
 2. Scrivi `local.properties` con `sdk.dir=C\:\\percorso\\Android\\Sdk`.
-3. Prendi `gradlew`, `gradlew.bat` e `gradle/wrapper/gradle-wrapper.jar` dall'artefatto
-   `wrapper-gradle` dell'ultima run, oppure genera il wrapper con
-   `gradle wrapper --gradle-version 8.11.1`, oppure apri la cartella in Android Studio,
-   che lo crea da sé.
+3. Genera il wrapper con `gradle wrapper --gradle-version 8.11.1`, oppure apri la
+   cartella in Android Studio, che lo crea da sé.
 4. Poi, come dice `CLAUDE.md`:
 
 ```
