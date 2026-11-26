@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -51,8 +52,12 @@ android {
 
 // Lo schema di Room finisce nel repo: serve a scrivere le migrazioni senza
 // indovinare, visto che non si possono perdere progressi e registrazioni.
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+//
+// La cartella la dichiara il plugin di Room e non `ksp { arg(...) }`: con l'arg
+// il task KSP non sa che lo schema e' una sua uscita, e appena entra in gioco la
+// cache di Gradle l'export si rompe con "Empty schema file".
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {

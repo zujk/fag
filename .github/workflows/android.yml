@@ -93,6 +93,9 @@ jobs:
           cp "$RUNNER_TEMP/gradle.log" "$pub/gradle.log" || true
           mkdir -p "$pub/test-results"
           find app/build/test-results -name '*.xml' -exec cp {} "$pub/test-results/" \; 2>/dev/null || true
+          # Lo schema di Room generato: serve nel repo per scrivere le migrazioni,
+          # e in locale non c'e' un JDK per generarlo.
+          cp -r app/schemas "$pub/schemas" 2>/dev/null || true
           cd "$pub"
           git init -q -b ci-rapporto
           git add -A
