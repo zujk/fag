@@ -28,7 +28,7 @@ class FeedbackRulesTest {
     // --- una regola per volta ------------------------------------------------
 
     @Test
-    fun `chiusura: la sua scende e la tua sale`() {
+    fun `la chiusura scatta se la sua scende e la tua sale`() {
         val sua = curva(FloatArray(40) { if (it < 30) 0f else -(it - 29) * 0.5f })
         val tua = curva(FloatArray(40) { if (it < 30) 0f else (it - 29) * 0.5f })
 
@@ -36,7 +36,7 @@ class FeedbackRulesTest {
     }
 
     @Test
-    fun `chiusura: se scendono entrambe non c'e niente da dire`() {
+    fun `se scendono entrambe non c'e niente da dire sulla chiusura`() {
         val sua = curva(FloatArray(40) { if (it < 30) 0f else -(it - 29) * 0.5f })
         val tua = curva(FloatArray(40) { if (it < 30) 0f else -(it - 29) * 0.5f })
 
@@ -44,7 +44,7 @@ class FeedbackRulesTest {
     }
 
     @Test
-    fun `escursione poca: la tua melodia si muove meno della sua`() {
+    fun `escursione poca quando la tua melodia si muove meno della sua`() {
         val sua = zigzag(40, 3f)
         val tua = zigzag(40, 1f)
 
@@ -52,7 +52,7 @@ class FeedbackRulesTest {
     }
 
     @Test
-    fun `escursione troppa: la tua melodia si muove troppo`() {
+    fun `escursione troppa quando la tua melodia si muove troppo`() {
         val sua = zigzag(40, 1f)
         val tua = zigzag(40, 3f)
 
@@ -60,7 +60,7 @@ class FeedbackRulesTest {
     }
 
     @Test
-    fun `durata corta: la tua ripetizione e piu svelta della clip`() {
+    fun `durata corta quando la ripetizione e piu svelta della clip`() {
         val sua = zigzag(40, 1f)
         val tua = zigzag(20, 1f)
 
@@ -68,7 +68,7 @@ class FeedbackRulesTest {
     }
 
     @Test
-    fun `durata lunga: la tua ripetizione trascina`() {
+    fun `durata lunga quando la ripetizione trascina`() {
         val sua = zigzag(40, 1f)
         val tua = zigzag(60, 1f)
 
