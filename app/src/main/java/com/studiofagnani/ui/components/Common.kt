@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.studiofagnani.session.Riscontro
 import com.studiofagnani.ui.theme.Spazi
 
 /** Etichetta piatta: categoria, contesto, energia. */
@@ -102,6 +103,33 @@ fun Avviso(testo: String, modifier: Modifier = Modifier, azione: (@Composable ()
             Column(Modifier.padding(start = Spazi.m)) {
                 Text(testo, style = MaterialTheme.typography.bodyMedium)
                 azione?.invoke()
+            }
+        }
+    }
+}
+
+/**
+ * Il riscontro a parole dopo una ripetizione (SPEC §5.3 punto 4 e §5.5).
+ *
+ * Al massimo due frasi, nessun punteggio: il numero lo mette Ziv col voto. Le
+ * frasi dicono cosa provare la prossima volta, mai com'è andata in generale.
+ */
+@Composable
+fun Riscontri(riscontri: List<Riscontro>, modifier: Modifier = Modifier) {
+    if (riscontri.isEmpty()) return
+    Card(
+        modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+    ) {
+        Column(
+            Modifier.padding(Spazi.m),
+            verticalArrangement = Arrangement.spacedBy(Spazi.s),
+        ) {
+            for (r in riscontri) {
+                Text(r.messaggio, style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

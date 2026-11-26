@@ -11,6 +11,9 @@ import com.studiofagnani.audio.RecordingConfig
 import com.studiofagnani.audio.VoiceRecorder
 import com.studiofagnani.data.ClipCard
 import com.studiofagnani.data.ClipRepository
+import com.studiofagnani.dsp.ContourBlob
+import com.studiofagnani.session.FeedbackRules
+import com.studiofagnani.session.Riscontro
 import com.studiofagnani.ui.components.Selezione
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -33,6 +36,12 @@ data class PracticeState(
     val ascoltiFatti: Int = 0,
     val peaksClip: FloatArray? = null,
     val peaksRipetizione: FloatArray? = null,
+    /** Curva della clip in semitoni, per la sovrimpressione durante l'ascolto. */
+    val curvaClip: FloatArray? = null,
+    /** La tua curva, riportata sui tempi della clip con DTW. */
+    val curvaTua: FloatArray? = null,
+    /** Da una a due frasi (SPEC §5.5). Vuoto finche' non c'e' una ripetizione. */
+    val riscontri: List<Riscontro> = emptyList(),
     /** Posizione di riproduzione come frazione 0..1. */
     val posizione: Float? = null,
     val velocita: Float = 1f,
@@ -58,6 +67,9 @@ data class PracticeState(
             ascoltiFatti == other.ascoltiFatti &&
             peaksClip === other.peaksClip &&
             peaksRipetizione === other.peaksRipetizione &&
+            curvaClip === other.curvaClip &&
+            curvaTua === other.curvaTua &&
+            riscontri == other.riscontri &&
             posizione == other.posizione &&
             velocita == other.velocita &&
             selezione == other.selezione &&
@@ -73,7 +85,7 @@ data class PracticeState(
         listOf(
             caricamento, card, passo, indiceInCoda, clipInCoda, ascoltiFatti,
             posizione, velocita, selezione, inRiproduzione, registrando,
-            livelloMicrofono, durataRipetizione, livello, messaggio, finita,
+            livelloMicrofono, durataRipetizione, livello, messaggio, finita, riscontri,
         ).hashCode()
 }
 
@@ -135,6 +147,10 @@ class PracticeViewModel(
                 peaksClip = peaks,
                 messaggio = if (peaks == null) "Audio della clip non leggibile." else null,
             )
+
+            // La curva costa piu' della forma d'onda (YIN su tutta la clip), quindi
+            // arriva dopo: la schermata e' gia' usabile mentre si calcola.
+            _state.value = _state.value.copy(curvaClip = repo.contour(card.clip)?.semitones)
         }
     }
 
@@ -223,15 +239,29 @@ class PracticeViewModel(
             when (esito) {
                 is VoiceRecorder.Result.Saved -> {
                     fileRipetizione = esito.file
-                    attemptId = repo.saveAttempt(
-                        clipId = card.id,
-                        wavPath = esito.file.absolutePath,
-                        durationS = esito.durationS,
-                    )
                     _state.value = _state.value.copy(
                         peaksRipetizione = repo.waveformOf(esito.file, BUCKETS),
                         durataRipetizione = esito.durationS,
                         passo = Passo.CONFRONTA,
+                    )
+
+                    // Curve, allineamento e riscontro (SPEC §5.3 punti 3 e 4).
+                    val confronto = repo.confronta(card.clip, esito.file)
+                    _state.value = _state.value.copy(
+                        curvaClip = confronto.sua?.semitones ?: _state.value.curvaClip,
+                        curvaTua = confronto.tuaAllineata,
+                        riscontri = confronto.riscontri,
+                    )
+
+                    // La ripetizione si salva con la sua curva e i codici delle
+                    // regole scattate: servono ai Progressi e ai voti differiti.
+                    attemptId = repo.saveAttempt(
+                        clipId = card.id,
+                        wavPath = esito.file.absolutePath,
+                        durationS = esito.durationS,
+                        contourBlob = confronto.tua?.let { ContourBlob.encode(it) },
+                        f0Med = confronto.tua?.medianHz?.toDouble()?.takeIf { !it.isNaN() },
+                        feedbackCodes = FeedbackRules.encodeCodes(confronto.riscontri),
                     )
                 }
                 VoiceRecorder.Result.NoSpeech -> _state.value = _state.value.copy(
@@ -314,6 +344,8 @@ class PracticeViewModel(
             ascoltiFatti = 0,
             peaksRipetizione = null,
             durataRipetizione = null,
+            curvaTua = null,
+            riscontri = emptyList(),
             messaggio = null,
         )
         fileRipetizione = null

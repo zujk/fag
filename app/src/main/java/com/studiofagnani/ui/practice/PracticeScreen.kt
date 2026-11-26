@@ -41,6 +41,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.studiofagnani.ui.components.Avviso
 import com.studiofagnani.ui.components.Etichetta
 import com.studiofagnani.ui.components.SelettoreLivello
+import com.studiofagnani.ui.components.CurvaAltezza
+import com.studiofagnani.ui.components.CurveSovrapposte
+import com.studiofagnani.ui.components.Riscontri
 import com.studiofagnani.ui.components.WaveformConfronto
 import com.studiofagnani.ui.components.WaveformView
 import com.studiofagnani.ui.theme.Spazi
@@ -129,12 +132,21 @@ fun PracticeScreen(
             }
         }
 
-        WaveformView(
-            peaks = state.peaksClip,
-            position = state.posizione,
-            selezione = state.selezione,
-            onSelezione = vm::setSelezione,
-        )
+        // Forma d'onda e curva di altezza sullo stesso riquadro: la curva sta
+        // "in sovrimpressione" come chiede la SPEC §5.3, non in un grafico a parte.
+        Box {
+            WaveformView(
+                peaks = state.peaksClip,
+                position = state.posizione,
+                selezione = state.selezione,
+                onSelezione = vm::setSelezione,
+            )
+            CurvaAltezza(
+                curva = state.curvaClip,
+                colore = MaterialTheme.colorScheme.tertiary,
+                descrizione = "Curva dell'altezza della clip",
+            )
+        }
         Text(
             if (state.selezione?.valida == true)
                 "Pezzo selezionato: suona in loop. Tocca la forma d'onda per annullare."
@@ -251,6 +263,12 @@ private fun PassoConfronta(state: PracticeState, vm: PracticeViewModel) {
             style = MaterialTheme.typography.bodyMedium,
         )
         WaveformConfronto(state.peaksClip, state.peaksRipetizione)
+
+        // Le due curve in semitoni, allineate con DTW: qui si guarda la forma
+        // della melodia, non l'altezza, che fra due voci e' sempre diversa.
+        CurveSovrapposte(sua = state.curvaClip, tua = state.curvaTua)
+        Riscontri(state.riscontri)
+
         BottoneGrande(
             testo = if (state.inRiproduzione) "Ferma" else "Suona clip e ripetizione",
             onClick = { if (state.inRiproduzione) vm.ferma() else vm.confronta() },

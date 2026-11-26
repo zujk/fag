@@ -7,13 +7,18 @@ import com.studiofagnani.data.db.ClipProgressEntity
 import com.studiofagnani.data.db.CONTEXT_HOME
 import com.studiofagnani.data.manifest.ExerciseImporter
 import com.studiofagnani.data.manifest.ManifestImporter
+import com.studiofagnani.dsp.Contour
+import com.studiofagnani.dsp.Dtw
 import com.studiofagnani.dsp.WavIo
 import com.studiofagnani.dsp.Waveform
+import com.studiofagnani.session.FeedbackRules
+import com.studiofagnani.session.Riscontro
 import com.studiofagnani.session.SpacedRepetition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.LocalDate
 
 class ClipRepository(
@@ -116,6 +121,9 @@ class ClipRepository(
         durationS: Double,
         context: String = CONTEXT_HOME,
         now: Long = System.currentTimeMillis(),
+        contourBlob: ByteArray? = null,
+        f0Med: Double? = null,
+        feedbackCodes: String? = null,
     ): Long = withContext(Dispatchers.IO) {
         val id = attemptDao.insert(
             AttemptEntity(
@@ -124,6 +132,9 @@ class ClipRepository(
                 context = context,
                 wavPath = wavPath,
                 durationS = durationS,
+                contourBlob = contourBlob,
+                f0Med = f0Med,
+                feedbackCodes = feedbackCodes,
             ),
         )
         val old = clipDao.getProgress(clipId)
@@ -160,10 +171,54 @@ class ClipRepository(
             }.getOrNull()
         }
 
-    suspend fun waveformOf(file: java.io.File, buckets: Int): FloatArray? =
+    suspend fun waveformOf(file: File, buckets: Int): FloatArray? =
         withContext(Dispatchers.IO) {
             runCatching { Waveform.peaks(WavIo.read(file).samples, buckets) }.getOrNull()
         }
+
+    /**
+     * Esito del confronto fra la clip e una ripetizione (SPEC §5.3 punti 3 e 4).
+     * [tuaAllineata] e' la tua curva riportata sui tempi della clip: e' quella da
+     * disegnare sovrapposta, perche' i due frame numero 37 non sono lo stesso istante.
+     */
+    class Confronto(
+        val sua: Contour?,
+        val tua: Contour?,
+        val tuaAllineata: FloatArray?,
+        val riscontri: List<Riscontro>,
+        val costo: Double?,
+    ) {
+        val completo: Boolean get() = sua != null && tua != null
+    }
+
+    /**
+     * Misura la ripetizione, la allinea alla clip con DTW e ne ricava il riscontro
+     * a parole. Sta qui e non nella schermata perche' la modalita' macchina (v2)
+     * fara' la stessa cosa senza nessuna schermata davanti.
+     */
+    suspend fun confronta(
+        clip: ClipEntity,
+        ripetizione: File,
+    ): Confronto = withContext(Dispatchers.IO) {
+        val sua = analisi.contour(clip)
+        val tua = runCatching {
+            val audio = WavIo.read(ripetizione)
+            ClipAnalyzer.analyze(audio.samples, audio.sampleRate).contour
+        }.getOrNull()
+
+        if (sua == null || tua == null) {
+            return@withContext Confronto(sua, tua, null, emptyList(), null)
+        }
+
+        val allineamento = Dtw.align(sua.semitones, tua.semitones)
+        Confronto(
+            sua = sua,
+            tua = tua,
+            tuaAllineata = Dtw.warp(tua.semitones, allineamento, sua.semitones.size),
+            riscontri = FeedbackRules.evaluate(sua, tua),
+            costo = allineamento.cost.takeIf { allineamento.size > 0 },
+        )
+    }
 
     suspend fun deleteAllRecordings(): Int = withContext(Dispatchers.IO) {
         db.attemptDao().deleteAll()
