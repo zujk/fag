@@ -29,20 +29,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
 
+      # L'SDK Android e' gia' installato sul runner: niente action da scaricare,
+      # un punto di rottura in meno. Qui si stampa solo cosa c'e', e si accettano
+      # le licenze nel caso Gradle debba tirare giu' un pacchetto che manca.
       - name: Ambiente
+        continue-on-error: true
         run: |
           echo "--- java ---";   java -version
           echo "--- gradle ---"; gradle --version
-          echo "--- sdk ---";    echo "ANDROID_HOME=$ANDROID_HOME"
-          ls "$ANDROID_HOME/platforms" 2>/dev/null || echo "(nessuna platform preinstallata)"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls "$ANDROID_SDK_ROOT/platforms" || echo "(nessuna platform)"
+          ls "$ANDROID_SDK_ROOT/build-tools" || echo "(nessun build-tools)"
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
 
       # Un solo passaggio con --continue: così un errore non nasconde gli altri e
       # ogni giro di CI mostra tutto quello che c'è da correggere.
