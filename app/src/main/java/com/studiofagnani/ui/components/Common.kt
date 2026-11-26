@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -99,7 +99,7 @@ fun Avviso(testo: String, modifier: Modifier = Modifier, azione: (@Composable ()
             Modifier.padding(Spazi.m),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Filled.WarningAmber, contentDescription = "Attenzione", Modifier.size(24.dp))
+            Icon(Icons.Filled.Warning, contentDescription = "Attenzione", Modifier.size(24.dp))
             Column(Modifier.padding(start = Spazi.m)) {
                 Text(testo, style = MaterialTheme.typography.bodyMedium)
                 azione?.invoke()

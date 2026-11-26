@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Today
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -112,13 +112,13 @@ private fun AppNav(container: AppContainer) {
                     NavigationBarItem(
                         selected = destinazioni?.any { it.route == Rotte.OGGI } == true,
                         onClick = { nav.navigateTab(Rotte.OGGI) },
-                        icon = { Icon(Icons.Filled.Today, contentDescription = null) },
+                        icon = { Icon(Icons.Filled.Home, contentDescription = null) },
                         label = { Text("Oggi") },
                     )
                     NavigationBarItem(
                         selected = destinazioni?.any { it.route == Rotte.LIBRERIA } == true,
                         onClick = { nav.navigateTab(Rotte.LIBRERIA) },
-                        icon = { Icon(Icons.Filled.LibraryMusic, contentDescription = null) },
+                        icon = { Icon(Icons.Filled.List, contentDescription = null) },
                         label = { Text("Libreria") },
                     )
                     NavigationBarItem(
