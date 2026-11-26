@@ -90,6 +90,16 @@ In locale, quando ci sarà un JDK:
 ./gradlew assembleDebug
 ```
 
+### Lo schema del database
+
+`app/schemas/` tiene lo schema di Room esportato, versione per versione. Serve a
+scrivere le migrazioni guardando com'era la tabella e non a memoria: progressi e
+registrazioni non si possono perdere (SPEC §4.1), quindi non c'è
+`fallbackToDestructiveMigration`.
+
+Lo genera il plugin `androidx.room` durante la build. In locale, senza JDK, si
+recupera dal ramo `ci-rapporto`, dove la CI lo pubblica insieme al rapporto.
+
 ### Test (JVM, senza emulatore)
 
 | File | Cosa copre |

@@ -1,0 +1,555 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "bc9910cb3aa6341195d373b99785a0ad",
+    "entities": [
+      {
+        "tableName": "clip",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `file` TEXT NOT NULL, `origin` TEXT NOT NULL, `category` TEXT NOT NULL, `category_id` TEXT NOT NULL, `context` TEXT, `energy` TEXT, `study_note` TEXT, `source_url` TEXT, `source_label` TEXT, `start_s` REAL, `end_s` REAL, `verification` TEXT, `check_status` TEXT, `user_ok_override` INTEGER NOT NULL, `hidden` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "file",
+            "columnName": "file",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin",
+            "columnName": "origin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "category_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "context",
+            "columnName": "context",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "energy",
+            "columnName": "energy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "studyNote",
+            "columnName": "study_note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sourceUrl",
+            "columnName": "source_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sourceLabel",
+            "columnName": "source_label",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "startS",
+            "columnName": "start_s",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "endS",
+            "columnName": "end_s",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "verification",
+            "columnName": "verification",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "checkStatus",
+            "columnName": "check_status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userOkOverride",
+            "columnName": "user_ok_override",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hidden",
+            "columnName": "hidden",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "clip_analysis",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clip_id` TEXT NOT NULL, `f0_med` REAL, `f0_p10` REAL, `f0_p90` REAL, `f1_med` REAL, `f2_med` REAL, `duration_s` REAL, `voiced_pct` REAL, `contour_blob` BLOB, PRIMARY KEY(`clip_id`), FOREIGN KEY(`clip_id`) REFERENCES `clip`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "clipId",
+            "columnName": "clip_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "f0Med",
+            "columnName": "f0_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0P10",
+            "columnName": "f0_p10",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0P90",
+            "columnName": "f0_p90",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f1Med",
+            "columnName": "f1_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f2Med",
+            "columnName": "f2_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "durationS",
+            "columnName": "duration_s",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voicedPct",
+            "columnName": "voiced_pct",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contourBlob",
+            "columnName": "contour_blob",
+            "affinity": "BLOB",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "clip_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "clip",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "clip_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "clip_progress",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clip_id` TEXT NOT NULL, `level` INTEGER, `last_practiced_at` INTEGER, `due_at` INTEGER, `reps_total` INTEGER NOT NULL, PRIMARY KEY(`clip_id`), FOREIGN KEY(`clip_id`) REFERENCES `clip`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "clipId",
+            "columnName": "clip_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "level",
+            "columnName": "level",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastPracticedAt",
+            "columnName": "last_practiced_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dueAt",
+            "columnName": "due_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "repsTotal",
+            "columnName": "reps_total",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "clip_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_clip_progress_due_at",
+            "unique": false,
+            "columnNames": [
+              "due_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_clip_progress_due_at` ON `${TABLE_NAME}` (`due_at`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "clip",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "clip_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "attempt",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `clip_id` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `context` TEXT NOT NULL, `wav_path` TEXT NOT NULL, `duration_s` REAL NOT NULL, `contour_blob` BLOB, `f0_med` REAL, `feedback_codes` TEXT, `self_rating` INTEGER, FOREIGN KEY(`clip_id`) REFERENCES `clip`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clipId",
+            "columnName": "clip_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "context",
+            "columnName": "context",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wavPath",
+            "columnName": "wav_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationS",
+            "columnName": "duration_s",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contourBlob",
+            "columnName": "contour_blob",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0Med",
+            "columnName": "f0_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feedbackCodes",
+            "columnName": "feedback_codes",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "selfRating",
+            "columnName": "self_rating",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_attempt_clip_id",
+            "unique": false,
+            "columnNames": [
+              "clip_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_attempt_clip_id` ON `${TABLE_NAME}` (`clip_id`)"
+          },
+          {
+            "name": "index_attempt_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_attempt_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "clip",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "clip_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `started_at` INTEGER NOT NULL, `ended_at` INTEGER, `phase` INTEGER NOT NULL, `mode` TEXT NOT NULL, `fatigue` TEXT, `note` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAt",
+            "columnName": "started_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAt",
+            "columnName": "ended_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phase",
+            "columnName": "phase",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fatigue",
+            "columnName": "fatigue",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "checkpoint",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `created_at` INTEGER NOT NULL, `reading_wav` TEXT, `free_wav` TEXT, `f0_med` REAL, `f0_p10` REAL, `f0_p90` REAL, `f1_med` REAL, `f2_med` REAL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "readingWav",
+            "columnName": "reading_wav",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "freeWav",
+            "columnName": "free_wav",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0Med",
+            "columnName": "f0_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0P10",
+            "columnName": "f0_p10",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f0P90",
+            "columnName": "f0_p90",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f1Med",
+            "columnName": "f1_med",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "f2Med",
+            "columnName": "f2_med",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "exercise",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `phase` INTEGER NOT NULL, `title` TEXT NOT NULL, `instructions` TEXT NOT NULL, `duration_s` INTEGER NOT NULL, `audio_asset` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phase",
+            "columnName": "phase",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "instructions",
+            "columnName": "instructions",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationS",
+            "columnName": "duration_s",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "audioAsset",
+            "columnName": "audio_asset",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc9910cb3aa6341195d373b99785a0ad')"
+    ]
+  }
+}
