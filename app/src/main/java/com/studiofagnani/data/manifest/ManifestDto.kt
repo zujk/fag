@@ -13,8 +13,9 @@ val manifestJson: Json = Json {
     isLenient = true
     explicitNulls = false
     encodeDefaults = true
+    // Niente `prettyPrintIndent`: è API sperimentale di kotlinx.serialization e
+    // l'ampiezza del rientro non vale un opt-in. Resta quella di fabbrica.
     prettyPrint = true
-    prettyPrintIndent = "  "
 }
 
 @Serializable

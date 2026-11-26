@@ -36,6 +36,53 @@ class Contour(
 
     val durationS: Double get() = durationMs / 1000.0
 
+    /** Primo frame con parlato sonoro, `-1` se non ce ne sono. */
+    val firstVoicedIndex: Int get() = semitones.indexOfFirst { !it.isNaN() }
+
+    /** Ultimo frame con parlato sonoro, `-1` se non ce ne sono. */
+    val lastVoicedIndex: Int get() = semitones.indexOfLast { !it.isNaN() }
+
+    /**
+     * Durata del solo parlato, dal primo all'ultimo frame sonoro.
+     *
+     * E' questa e non [durationMs] la durata da confrontare fra una clip e una
+     * ripetizione: la registrazione si ferma dopo un secondo e mezzo di silenzio,
+     * quindi porta sempre una coda muta che la clip non ha. Confrontando i file
+     * interi ogni ripetizione sembrerebbe trascinata.
+     */
+    val voicedSpanMs: Double
+        get() {
+            val primo = firstVoicedIndex
+            if (primo < 0) return 0.0
+            return (lastVoicedIndex - primo + 1) * hopMs
+        }
+
+    val voicedSpanS: Double get() = voicedSpanMs / 1000.0
+
+    /**
+     * Di quanto sale o scende la curva negli ultimi [ms] di parlato: positivo se
+     * sale, negativo se scende. `NaN` se non ci sono almeno due frame sonori.
+     *
+     * Si misura a partire dall'ultimo frame sonoro, non dalla fine del file, per
+     * la stessa ragione di [voicedSpanMs].
+     */
+    fun closingDelta(ms: Double): Float {
+        val ultimo = lastVoicedIndex
+        if (ultimo < 0 || ms <= 0.0) return Float.NaN
+        val frameDaGuardare = (ms / hopMs).toInt().coerceAtLeast(1)
+        val da = (ultimo - frameDaGuardare + 1).coerceAtLeast(0)
+
+        var primoSonoro = -1
+        for (i in da..ultimo) {
+            if (!semitones[i].isNaN()) {
+                primoSonoro = i
+                break
+            }
+        }
+        if (primoSonoro < 0 || primoSonoro == ultimo) return Float.NaN
+        return semitones[ultimo] - semitones[primoSonoro]
+    }
+
     /**
      * Percentile [p] (da 0 a 1) dei frame sonori, in semitoni, con
      * interpolazione fra i due valori vicini. `NaN` se non c'e' nulla di sonoro.

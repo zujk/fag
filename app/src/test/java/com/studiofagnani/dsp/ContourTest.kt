@@ -89,6 +89,69 @@ class ContourTest {
         assertEquals(1.0, c.durationS, 1e-9)
     }
 
+    // --- durata del parlato e chiusura --------------------------------------
+
+    @Test
+    fun `la durata del parlato ignora il silenzio davanti e dietro`() {
+        // Trenta frame in tutto, parlato dal 10 al 19: trecento millisecondi.
+        val hz = FloatArray(30) { if (it in 10..19) 200f else nan }
+        val c = Contour.fromHz(hz, hopMs = 10.0)
+
+        assertEquals(10, c.firstVoicedIndex)
+        assertEquals(19, c.lastVoicedIndex)
+        assertEquals(100.0, c.voicedSpanMs, 1e-9)
+        assertEquals(0.1, c.voicedSpanS, 1e-9)
+        // La durata del file invece li conta tutti.
+        assertEquals(300.0, c.durationMs, 1e-9)
+    }
+
+    @Test
+    fun `senza parlato la durata del parlato e zero`() {
+        val c = Contour.fromHz(FloatArray(20) { nan })
+        assertEquals(-1, c.firstVoicedIndex)
+        assertEquals(-1, c.lastVoicedIndex)
+        assertEquals(0.0, c.voicedSpanMs, 1e-9)
+        assertTrue(c.closingDelta(300.0).isNaN())
+    }
+
+    @Test
+    fun `la chiusura dice di quanto scende la fine della frase`() {
+        // Mediana 200. Gli ultimi 300 ms (30 frame) scendono di un'ottava.
+        val hz = FloatArray(60) { if (it < 30) 200f else 200f * Math.pow(2.0, -(it - 29) / 12.0 / 2.5).toFloat() }
+        val c = Contour.fromHz(hz, hopMs = 10.0)
+        val delta = c.closingDelta(300.0)
+        assertTrue("la chiusura deve scendere, vale $delta", delta < -2f)
+    }
+
+    @Test
+    fun `una chiusura che sale da un valore positivo`() {
+        val su = Contour.fromHz(FloatArray(40) { 200f + it * 5f }, hopMs = 10.0)
+        assertTrue("vale ${su.closingDelta(200.0)}", su.closingDelta(200.0) > 0f)
+
+        val piatta = Contour.fromHz(FloatArray(40) { 200f }, hopMs = 10.0)
+        assertEquals(0f, piatta.closingDelta(200.0), 1e-4f)
+    }
+
+    @Test
+    fun `la chiusura si misura dall'ultimo frame sonoro, non dalla fine del file`() {
+        // Frase che scende, poi mezzo secondo di coda muta: la coda non conta.
+        val frase = FloatArray(30) { 300f - it * 5f }
+        val conCoda = FloatArray(80) { if (it < 30) frase[it] else nan }
+        val senzaCoda = Contour.fromHz(frase, hopMs = 10.0)
+
+        assertEquals(
+            senzaCoda.closingDelta(200.0),
+            Contour.fromHz(conCoda, hopMs = 10.0).closingDelta(200.0),
+            1e-4f,
+        )
+    }
+
+    @Test
+    fun `un solo frame sonoro non ha una chiusura`() {
+        val c = Contour.fromHz(floatArrayOf(nan, 200f, nan), hopMs = 10.0)
+        assertTrue(c.closingDelta(300.0).isNaN())
+    }
+
     @Test
     fun `una curva vuota non fa errore`() {
         val c = Contour.fromHz(FloatArray(0))
