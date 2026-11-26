@@ -2,7 +2,11 @@ name: build
 
 # Compila e lancia i test sul runner di GitHub: JDK 17 + Android SDK, che sulla
 # macchina di sviluppo non ci sono. Si usa `gradle` provvisto dal runner, non il
-# wrapper, così non c'è bisogno di tenere `gradle-wrapper.jar` (un binario) nel repo.
+# wrapper, cosi' non c'e' bisogno di tenere `gradle-wrapper.jar` (un binario) nel repo.
+#
+# L'output finisce anche sul ramo `ci-rapporto` (vedi l'ultimo passaggio): i log
+# delle Actions e gli artefatti si scaricano solo da chi ha accesso al repo,
+# mentre un file su un ramo si legge da raw.githubusercontent.com.
 #
 # Nota: i WAV delle clip non stanno nel repo, quindi l'APK prodotto qui non contiene
 # audio. Serve a verificare che il codice compili e che i test passino.
@@ -13,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -48,16 +52,14 @@ jobs:
           ls "$ANDROID_SDK_ROOT/build-tools" || echo "(nessun build-tools)"
           yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
 
-      # Un solo passaggio con --continue: così un errore non nasconde gli altri e
-      # ogni giro di CI mostra tutto quello che c'è da correggere.
+      # Un solo passaggio con --continue: cosi' un errore non nasconde gli altri e
+      # ogni giro di CI mostra tutto quello che c'e' da correggere.
       - name: Test JVM e APK di debug
-        run: gradle test assembleDebug --continue --stacktrace -Dorg.gradle.console=plain
-
-      # Comodo per lo sviluppo in locale: il .jar del wrapper senza tenerlo nel repo.
-      - name: Wrapper Gradle
-        if: always()
-        continue-on-error: true
-        run: gradle wrapper --gradle-version 8.11.1
+        id: build
+        run: |
+          set -o pipefail
+          gradle test assembleDebug --continue --stacktrace -Dorg.gradle.console=plain 2>&1 \
+            | tee "$RUNNER_TEMP/gradle.log"
 
       - name: Rapporti dei test
         if: always()
@@ -69,18 +71,6 @@ jobs:
             app/build/test-results/
           if-no-files-found: ignore
 
-      - name: Wrapper Gradle (da copiare nel repo locale)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wrapper-gradle
-          path: |
-            gradlew
-            gradlew.bat
-            gradle/wrapper/gradle-wrapper.jar
-            gradle/wrapper/gradle-wrapper.properties
-          if-no-files-found: ignore
-
       - name: APK
         if: always()
         uses: actions/upload-artifact@v4
@@ -88,3 +78,26 @@ jobs:
           name: apk-debug
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: ignore
+
+      # Il rapporto su un ramo a parte, leggibile senza accedere a GitHub. Il ramo
+      # viene riscritto ogni volta: non e' storia, e' l'esito dell'ultima run.
+      - name: Pubblica il rapporto sul ramo ci-rapporto
+        if: always()
+        continue-on-error: true
+        run: |
+          python3 .github/riassunto.py \
+            "$RUNNER_TEMP/gradle.log" app/build/test-results > "$RUNNER_TEMP/RAPPORTO.md"
+          pub="$RUNNER_TEMP/pub"
+          rm -rf "$pub" && mkdir -p "$pub"
+          cp "$RUNNER_TEMP/RAPPORTO.md" "$pub/RAPPORTO.md"
+          cp "$RUNNER_TEMP/gradle.log" "$pub/gradle.log" || true
+          mkdir -p "$pub/test-results"
+          find app/build/test-results -name '*.xml' -exec cp {} "$pub/test-results/" \; 2>/dev/null || true
+          cd "$pub"
+          git init -q -b ci-rapporto
+          git add -A
+          git -c user.email=actions@github.com -c user.name=CI \
+            commit -qm "esito della run ${{ github.run_number }} (${{ github.sha }})"
+          git push -q --force \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" \
+            ci-rapporto
