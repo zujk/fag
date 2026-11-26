@@ -70,16 +70,18 @@ asset non sono stati rigenerati.
 
 ### L'APK da installare
 
-Ogni run della CI pubblica l'APK di debug sul ramo `ci-rapporto`. Il link è sempre lo
-stesso, e si apre direttamente dal telefono:
+Ogni build riuscita pubblica l'APK di debug come release con il tag `apk-ultima`.
+Il link è sempre lo stesso e si apre direttamente dal telefono:
 
 ```
-https://raw.githubusercontent.com/zujk/fag/ci-rapporto/studio-fagnani.apk
+https://github.com/zujk/fag/releases/download/apk-ultima/studio-fagnani.apk
 ```
 
 È firmato con la chiave di debug, quindi al primo avvio Android chiede di consentire
-l'installazione da questa origine. Lo stesso file sta anche fra gli artefatti della run,
-ma lì arriva dentro uno zip, scomodo da aprire su Android.
+l'installazione da questa origine. Pesa una cinquantina di MB, quasi tutti clip.
+
+Lo stesso file sta anche fra gli artefatti della run, ma lì arriva dentro uno zip e
+serve l'accesso al repo: scomodo da aprire su Android.
 
 ### Come compilare
 

@@ -81,6 +81,21 @@ jobs:
 
       # Il rapporto su un ramo a parte, leggibile senza accedere a GitHub. Il ramo
       # viene riscritto ogni volta: non e' storia, e' l'esito dell'ultima run.
+      # L'APK come release, non come artefatto: un artefatto arriva in uno zip e
+      # va scaricato da chi ha accesso al repo, mentre la release ha un link
+      # diretto che si apre e si installa dal telefono. Il tag e' sempre lo
+      # stesso, quindi il link non cambia a ogni build.
+      - name: APK installabile
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apk=$(ls app/build/outputs/apk/debug/*.apk | head -1)
+          cp "$apk" studio-fagnani.apk
+          ls -lh studio-fagnani.apk
+          gh release delete apk-ultima --yes --cleanup-tag || true
+          gh release create apk-ultima studio-fagnani.apk             --title "APK di prova (build ${{ github.run_number }})"             --notes "Dalla run ${{ github.run_number }}, commit ${{ github.sha }}. Firmato con la chiave di debug: il telefono chiedera' di consentire l'installazione da questa origine."
+
       - name: Pubblica il rapporto sul ramo ci-rapporto
         if: always()
         continue-on-error: true
@@ -96,13 +111,8 @@ jobs:
           # Lo schema di Room generato: serve nel repo per scrivere le migrazioni,
           # e in locale non c'e' un JDK per generarlo.
           cp -r app/schemas "$pub/schemas" 2>/dev/null || true
-          # L'APK accanto al rapporto: dal ramo si scarica con un link diretto,
-          # che sul telefono si apre e si installa senza passare dagli artefatti
-          # (quelli arrivano in uno zip, scomodo da aprire su Android).
-          cp app/build/outputs/apk/debug/*.apk "$pub/studio-fagnani.apk" 2>/dev/null || true
           cd "$pub"
           git init -q -b ci-rapporto
-          { echo '*.apk binary'; echo '*.wav binary'; } > .gitattributes
           git add -A
           git -c user.email=actions@github.com -c user.name=CI \
             commit -qm "esito della run ${{ github.run_number }} (${{ github.sha }})"
