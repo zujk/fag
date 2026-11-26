@@ -102,9 +102,7 @@ jobs:
           cp app/build/outputs/apk/debug/*.apk "$pub/studio-fagnani.apk" 2>/dev/null || true
           cd "$pub"
           git init -q -b ci-rapporto
-          printf '*.apk binary
-*.wav binary
-' > .gitattributes
+          { echo '*.apk binary'; echo '*.wav binary'; } > .gitattributes
           git add -A
           git -c user.email=actions@github.com -c user.name=CI \
             commit -qm "esito della run ${{ github.run_number }} (${{ github.sha }})"
