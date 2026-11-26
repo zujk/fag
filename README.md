@@ -1,4 +1,4 @@
-# Studio — pacchetto di partenza per Claude Code
+# Studio Voce — pacchetto di partenza per Claude Code
 
 Contenuto:
 - `SPEC.md` — specifica completa dell'app
@@ -74,8 +74,12 @@ Ogni build riuscita pubblica l'APK di debug come release con il tag `apk-ultima`
 Il link è sempre lo stesso e si apre direttamente dal telefono:
 
 ```
-https://github.com/zujk/fag/releases/download/apk-ultima/studio-fagnani.apk
+https://github.com/zujk/fag/releases/download/apk-ultima/studio-voce.apk
 ```
+
+Il nome dell'app sul telefono è **Studio Voce** e il package è `com.studiovoce`: per
+Android è un'app diversa da quella che si chiamava Studio Fagnani, quindi conviene
+disinstallare la vecchia, che altrimenti resta lì con i suoi dati.
 
 È firmato con la chiave di debug, quindi al primo avvio Android chiede di consentire
 l'installazione da questa origine. Pesa 73 MB: 37,6 di clip audio e 34,6 di codice

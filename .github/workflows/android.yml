@@ -91,10 +91,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           apk=$(ls app/build/outputs/apk/debug/*.apk | head -1)
-          cp "$apk" studio-fagnani.apk
-          ls -lh studio-fagnani.apk
+          cp "$apk" studio-voce.apk
+          ls -lh studio-voce.apk
           gh release delete apk-ultima --yes --cleanup-tag || true
-          gh release create apk-ultima studio-fagnani.apk             --title "APK di prova (build ${{ github.run_number }})"             --notes "Dalla run ${{ github.run_number }}, commit ${{ github.sha }}. Firmato con la chiave di debug: il telefono chiedera' di consentire l'installazione da questa origine."
+          gh release create apk-ultima studio-voce.apk             --title "APK di prova (build ${{ github.run_number }})"             --notes "Dalla run ${{ github.run_number }}, commit ${{ github.sha }}. Firmato con la chiave di debug: il telefono chiedera' di consentire l'installazione da questa origine."
 
       - name: Pubblica il rapporto sul ramo ci-rapporto
         if: always()

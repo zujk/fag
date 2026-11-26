@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera clips.json (manifest dell'app Studio Fagnani) dal foglio Voice_bank_Fagnani.xlsx.
+"""Genera clips.json (manifest dell'app Studio Voce) dal foglio Voice_bank_Fagnani.xlsx.
 
 Uso:
     python tools/build_manifest.py <cartella-con-foglio-e-clip> [--out app/src/main/assets/clips]

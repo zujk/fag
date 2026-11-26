@@ -41,7 +41,7 @@ for root, _, files in os.walk(results_dir):
             for bad in list(case.findall("failure")) + list(case.findall("error")):
                 falliti += 1
                 testo = (bad.text or "").strip().splitlines()
-                nostre = [r.strip() for r in testo if "com.studiofagnani" in r]
+                nostre = [r.strip() for r in testo if "com.studiovoce" in r]
                 dettagli.append(
                     "### %s > %s\n\n    %s\n\n    %s\n"
                     % (

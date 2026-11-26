@@ -219,7 +219,7 @@ Gli esercizi di riscaldamento e della fase 1 si definiscono in `assets/exercises
 ## 9. Pacchetti e struttura
 
 ```
-app/src/main/java/.../studiofagnani/
+app/src/main/java/.../studiovoce/
   data/        Room, DAO, import manifest, export/backup
   dsp/         Yin.kt, LpcFormants.kt, Dtw.kt, WavIo.kt, Contour.kt
   audio/       Recorder.kt (AudioRecord + VAD a energia), Player.kt (ExoPlayer + MediaSession)

@@ -12,19 +12,19 @@
     <uses-feature android:name="android.hardware.microphone" android:required="true" />
 
     <application
-        android:name=".StudioFagnaniApp"
+        android:name=".StudioVoceApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/Theme.StudioFagnani">
+        android:theme="@style/Theme.StudioVoce">
 
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.StudioFagnani">
+            android:theme="@style/Theme.StudioVoce">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

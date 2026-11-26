@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.studiofagnani"
+    namespace = "com.studiovoce"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.studiofagnani"
+        applicationId = "com.studiovoce"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
