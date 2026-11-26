@@ -13,27 +13,46 @@ Avvio:
 
 ---
 
-## Stato: milestone v0
+## Stato: milestone v1
 
-Stato: **compila e i 50 test passano** (CI di GitHub, run #4: 0 errori di
-compilazione, 0 fallimenti, APK di debug prodotto).
+**Compila e i 179 test passano** (CI di GitHub, run #15: 0 errori di compilazione,
+0 fallimenti, APK di debug prodotto).
 
-Fatto (SPEC §10, v0):
+Fatto nella v0 (SPEC §10):
 
 - **Libreria** con le 40 clip, filtri per stato, categoria, contesto, energia e Livello.
   Riproduzione, velocità 0,75x e loop A-B trascinando sulla forma d'onda.
-- **Esercizio su clip** (SPEC §5.3, parte v0): ascolta 3 volte con pausa di 1 s → beep e
-  registrazione che si ferma da sola dopo 1,5 s di silenzio → clip e ripetizione in fila,
-  con le due forme d'onda → voto 1-5 → "Ancora" / "Prossima".
+- **Esercizio su clip** (SPEC §5.3): ascolta 3 volte con pausa di 1 s → beep e
+  registrazione che si ferma da sola dopo 1,5 s di silenzio → clip e ripetizione in fila.
 - **Ripasso a intervalli** (SPEC §5.4) come funzione pura, con test su date finte.
-- **Oggi**: un tasto grande che apre il ripasso del giorno.
-- Tutto offline: nessun permesso INTERNET nel manifest finale (viene anche rimosso con
-  `tools:node="remove"` nel caso una libreria provi a unirlo).
 
-Rimandato alle milestone successive, come da SPEC §10: curve di altezza con YIN e
-confronto DTW, riscontro in parole, percorso guidato con fasi e domanda sulla fatica (v1);
-modalità macchina e treno (v2); formanti, controllo della domenica, aggiungi/importa/esporta
-clip e backup zip (v3). `assets/exercises.json` arriva con la v1, insieme al riscaldamento.
+Fatto nella v1 (SPEC §10):
+
+- **Curve di altezza** con YIN: finestra 40 ms, passo 10 ms, 75-500 Hz. Sui seni a 100,
+  180 e 250 Hz l'errore misurato è fra lo 0,000% e lo 0,005%, contro l'1% richiesto;
+  sul glissando 150→250 Hz la curva è monotona.
+- **Confronto** delle due curve in semitoni, allineate con DTW, e **riscontro in parole**
+  con le sei regole di §5.5: al massimo due frasi, nessun punteggio.
+- **Sessione guidata** con un tasto solo: riscaldamento, blocco della fase, ripasso e
+  "Com'è la voce adesso?" in chiusura. Due "Affaticata" di fila e il giorno dopo la
+  sessione è solo riscaldamento leggero.
+- **Fase 0** con le tre registrazioni guidate e la scheda bersaglio.
+- **Impostazioni**: fase corrente (l'app la suggerisce, la confermi tu), primo giorno,
+  brano fisso, cancellazione delle registrazioni.
+- Esercizi e domande sono **dati**, in `assets/exercises.json`, come le clip.
+- Tutto offline: nessun permesso INTERNET nel manifest finale (viene anche rimosso con
+  `tools:node="remove"` nel caso una libreria provi a unirlo; il log della CI conferma
+  che nessuna lo chiede).
+
+**Quello che i test non coprono.** Le due parti di interfaccia della v1 — la sessione
+guidata e la fase 0 — compilano e non sono mai state eseguite: non c'è un emulatore in
+questo ambiente. I criteri misurabili (YIN, regole di riscontro, pianificatore) sono
+verificati dai test unitari; il resto va provato sul telefono.
+
+Rimandato alle milestone successive, come da SPEC §10: modalità macchina e treno (v2);
+formanti LPC, controllo della domenica con i grafici dei progressi,
+aggiungi/importa/esporta clip e backup zip (v3). Le colonne `f1_med` e `f2_med` esistono
+già e restano vuote finché non arrivano le LPC.
 
 ### Clip audio — non stanno nel repo
 
@@ -104,8 +123,16 @@ recupera dal ramo `ci-rapporto`, dove la CI lo pubblica insieme al rapporto.
 
 | File | Cosa copre |
 | --- | --- |
-| `session/SpacedRepetitionTest` | intervalli per Livello, limite di 6 clip, precedenza della categoria della settimana, esclusione di clip nascoste e sospette, date finte |
-| `audio/SilenceDetectorTest` | stop dopo 1,5 s di silenzio, pause brevi che non fermano, tetto di durata, taratura del rumore di fondo |
-| `dsp/WavIoTest` | scrittura/rilettura di segnali sintetici, intestazione, writer incrementale, file troncati, chunk sconosciuti, stereo→mono, e un controllo sui 40 WAV veri |
+| `dsp/YinTest` | i criteri di §10 sui seni e sul glissando, errore di ottava, silenzio e rumore, altezze fuori intervallo, sottocampionamento e passa-basso |
+| `dsp/ContourTest` | semitoni sulla mediana, percentili, escursione, durata del solo parlato, pendenza della chiusura, codifica di `contour_blob` |
+| `dsp/DtwTest` | allineamento di curve identiche, dilatate e spostate, frame muti con penale fissa, media sui frame che cadono insieme |
+| `session/FeedbackRulesTest` | le sei regole di §5.5 una per una, priorità e limite di due frasi, soglie dalla configurazione |
+| `session/SessionPlannerTest` | le cinque fasi, sovrapposizione 1-2, voce affaticata, tempi del riscaldamento, rotazione delle categorie, fase suggerita |
+| `session/SpacedRepetitionTest` | intervalli per Livello, limite di 6 clip, precedenza della categoria della settimana, date finte |
+| `data/ClipAnalyzerTest` | misure di §4.4 su segnali sintetici, cosa il foglio sovrascrive e cosa no |
+| `data/ExerciseMergeTest` | righe malformate scartate, il file vero degli asset, le domande della fase 0 |
+| `data/ManifestMergeTest` | l'import non tocca mai i progressi, clip senza audio nascoste, manifest vero con 40 clip |
+| `data/SettingsStoreTest` | codifica dell'ordine delle categorie |
+| `audio/SilenceDetectorTest` | stop dopo 1,5 s di silenzio, pause brevi che non fermano, tetto di durata, taratura del rumore |
+| `dsp/WavIoTest` | scrittura/rilettura di segnali sintetici, writer incrementale, file troncati, stereo→mono |
 | `dsp/WaveformTest` | inviluppo, RMS su float e su PCM 16 bit, casi limite |
-| `data/ManifestMergeTest` | l'import non tocca mai i progressi, clip senza audio nascoste, misure del foglio, campi sconosciuti ignorati, manifest vero con 40 clip |
