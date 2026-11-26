@@ -12,14 +12,11 @@ captures/
 # Il wrapper Gradle lo genera la CI (il .jar e' un binario, non sta nel repo).
 gradle/wrapper/gradle-wrapper.jar
 
-# L'AUDIO NON STA NEL REPO.
-# Sono spezzoni di trasmissioni televisive: materiale di terzi, che non va
-# distribuito. Nel repo ci sono solo i metadati (assets/clips/clips.json).
-# I WAV si rigenerano in locale con:
+# I WAV delle clip STANNO nel repo, per scelta di Ziv: servono dentro l'APK che
+# costruisce la CI, altrimenti l'app arriva sul telefono senza audio. Sono
+# spezzoni brevi di trasmissioni televisive, tenuti qui come citazione per studio
+# personale. Si rigenerano con:
 #   python tools/build_manifest.py <cartella-del-foglio> --out app/src/main/assets/clips
-# Di conseguenza l'APK costruito dalla CI non contiene clip: serve a verificare
-# che il codice compili e che i test passino, non a usare l'app.
-app/src/main/assets/clips/*.wav
 
 # clip/ e' solo una copia di lavoro degli stessi WAV.
 clip/

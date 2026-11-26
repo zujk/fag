@@ -96,8 +96,15 @@ jobs:
           # Lo schema di Room generato: serve nel repo per scrivere le migrazioni,
           # e in locale non c'e' un JDK per generarlo.
           cp -r app/schemas "$pub/schemas" 2>/dev/null || true
+          # L'APK accanto al rapporto: dal ramo si scarica con un link diretto,
+          # che sul telefono si apre e si installa senza passare dagli artefatti
+          # (quelli arrivano in uno zip, scomodo da aprire su Android).
+          cp app/build/outputs/apk/debug/*.apk "$pub/studio-fagnani.apk" 2>/dev/null || true
           cd "$pub"
           git init -q -b ci-rapporto
+          printf '*.apk binary
+*.wav binary
+' > .gitattributes
           git add -A
           git -c user.email=actions@github.com -c user.name=CI \
             commit -qm "esito della run ${{ github.run_number }} (${{ github.sha }})"

@@ -54,23 +54,32 @@ formanti LPC, controllo della domenica con i grafici dei progressi,
 aggiungi/importa/esporta clip e backup zip (v3). Le colonne `f1_med` e `f2_med` esistono
 già e restano vuote finché non arrivano le LPC.
 
-### Clip audio — non stanno nel repo
+### Clip audio
 
-Nel repo ci sono **solo i metadati** (`app/src/main/assets/clips/clips.json`). I WAV sono
-spezzoni di trasmissioni televisive, materiale di terzi che non va distribuito, quindi
-`.gitignore` li esclude. Si mettono in locale con:
+I 40 WAV stanno nel repo, in `app/src/main/assets/clips/`, così l'APK che costruisce la
+CI arriva sul telefono già con l'audio. Sono spezzoni brevi di trasmissioni televisive,
+tenuti qui come citazione per studio personale. Si rigenerano dal foglio con:
 
 ```
-python tools/build_manifest.py C:\DEV\Claude\fff --out app/src/main/assets/clips
+python tools/build_manifest.py C:\DEV\Claudeff --out app/src/main/assets/clips
 ```
-
-Conseguenza: l'APK che costruisce la CI **non contiene clip**. Serve a verificare che il
-codice compili e che i test passino; l'APK da usare si costruisce in locale, con l'audio
-al suo posto.
 
 Una clip con `audio_present: false` o con il file mancante si importa ma resta nascosta, e
 viene contata in un avviso in Libreria e in Oggi: è il percorso che si vede quando gli
 asset non sono stati rigenerati.
+
+### L'APK da installare
+
+Ogni run della CI pubblica l'APK di debug sul ramo `ci-rapporto`. Il link è sempre lo
+stesso, e si apre direttamente dal telefono:
+
+```
+https://raw.githubusercontent.com/zujk/fag/ci-rapporto/studio-fagnani.apk
+```
+
+È firmato con la chiave di debug, quindi al primo avvio Android chiede di consentire
+l'installazione da questa origine. Lo stesso file sta anche fra gli artefatti della run,
+ma lì arriva dentro uno zip, scomodo da aprire su Android.
 
 ### Come compilare
 
