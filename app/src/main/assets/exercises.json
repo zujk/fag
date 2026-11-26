@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+
+  "_nota": "Esercizi del riscaldamento e della fase 1 (SPEC §8): dati, non codice. La fase 0 e' il riscaldamento, che vale per ogni fase; la fase 1 e' il blocco di esercizi delle settimane 2-8. L'ordine delle categorie della fase 2 sta qui e non nel codice, perche' clips.json lo rigenera build_manifest.py e andrebbe perso.",
+
+  "phase2_category_order": [
+    "domanda-secca",
+    "calma-seria",
+    "ironia-sarcasmo",
+    "incalzare",
+    "domanda-lunga",
+    "reazione-breve",
+    "risata",
+    "spontaneo-fuori-scena"
+  ],
+
+  "exercises": [
+    {
+      "id": "humming",
+      "phase": 0,
+      "title": "Humming in avanti",
+      "instructions": "Labbra chiuse e mandibola morbida. Fai un mmm comodo e senti il formicolio sul davanti del viso, fra naso e labbra. Se il formicolio sparisce, abbassa un po' il volume e torna dove si sente.",
+      "duration_s": 30,
+      "audio_asset": null
+    },
+    {
+      "id": "trilli-labbra",
+      "phase": 0,
+      "title": "Trilli delle labbra",
+      "instructions": "Soffia fra le labbra chiuse senza stringerle, come il rumore di un motorino. Se non parte, appoggia due dita agli angoli della bocca e riprova.",
+      "duration_s": 30,
+      "audio_asset": null
+    },
+    {
+      "id": "sirena",
+      "phase": 0,
+      "title": "Sirena",
+      "instructions": "Con il mmm sali e scendi piano, come una sirena lontana. Stai dove il suono viene facile: agli estremi non serve arrivare.",
+      "duration_s": 30,
+      "audio_asset": null
+    },
+    {
+      "id": "yawn-sigh",
+      "phase": 0,
+      "title": "Sbadiglio e sospiro",
+      "instructions": "Comincia uno sbadiglio e lascialo finire in un sospiro sulla a. Serve a sciogliere la gola, non a fare suono: se viene piano va benissimo.",
+      "duration_s": 30,
+      "audio_asset": null
+    },
+    {
+      "id": "ng-vocali",
+      "phase": 1,
+      "title": "Dalla ng alle vocali",
+      "instructions": "Dì ng come nella fine di «gong» e tienilo lì. Da quel punto apri su una i, poi su una e, cercando di lasciare il suono dove era: davanti, non in gola.",
+      "duration_s": 60,
+      "audio_asset": null
+    },
+    {
+      "id": "vocali-chiare-scure",
+      "phase": 1,
+      "title": "Vocali chiare e scure",
+      "instructions": "Dì «mia» col suono raccolto davanti, poi «muo» col suono più indietro. Alterna qualche volta e ascolta la differenza. Non è una gara: serve a sentire dove puoi spostarlo.",
+      "duration_s": 60,
+      "audio_asset": null
+    },
+    {
+      "id": "pavimento-di-altezza",
+      "phase": 1,
+      "title": "La frase che finisce in basso",
+      "instructions": "Leggi una frase qualsiasi e lasciala finire verso il basso, come quando una domanda non è una domanda. Ripetila tre volte tenendo la fine ferma e bassa.",
+      "duration_s": 90,
+      "audio_asset": null
+    },
+    {
+      "id": "lettura-tre-frasi",
+      "phase": 1,
+      "title": "Tre frasi tenendo il davanti",
+      "instructions": "Leggi tre frasi di fila tenendo il formicolio davanti che hai trovato con il mmm. Se lo perdi, fermati, rifai un mmm breve e riparti dalla frase.",
+      "duration_s": 90,
+      "audio_asset": null
+    }
+  ]
+}

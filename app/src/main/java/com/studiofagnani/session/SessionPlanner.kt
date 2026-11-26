@@ -75,6 +75,18 @@ object SessionPlanner {
         val leggera: Boolean,
     )
 
+    /**
+     * In che settimana di allenamento siamo. La settimana 1 e' quella che
+     * comincia il primo giorno; senza un primo giorno siamo all'inizio.
+     *
+     * Serve perche' fase e categoria della settimana si decidono sul calendario,
+     * e il calendario non deve finire dentro la logica: entra come numero.
+     */
+    fun settimanaDa(primoGiorno: Long?, oggi: Long): Int {
+        if (primoGiorno == null || oggi < primoGiorno) return 1
+        return ((oggi - primoGiorno) / 7 + 1).toInt()
+    }
+
     fun plan(stato: Stato, soglie: SoglieSessione = SoglieSessione()): Piano {
         val fase = stato.phase.coerceIn(0, 4)
         val categoria = categoriaDellaSettimana(fase, stato, soglie)

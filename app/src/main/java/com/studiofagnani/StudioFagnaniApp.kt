@@ -37,6 +37,15 @@ class StudioFagnaniApp : Application() {
                 "Manifest: ${report.total} clip, ${report.inserted} nuove, " +
                     "${report.updated} aggiornate, ${report.hidden.size} senza audio",
             )
+
+            // Gli esercizi sono dati come le clip (SPEC §8) e non hanno progressi
+            // attaccati: si rileggono a ogni avvio senza conseguenze.
+            val esercizi = container.repository.importExercises()
+            Log.i(
+                TAG,
+                "Esercizi: ${esercizi.imported} importati" +
+                    if (esercizi.skipped.isEmpty()) "" else ", scartati ${esercizi.skipped}",
+            )
         }
     }
 

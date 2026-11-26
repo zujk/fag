@@ -356,6 +356,30 @@ class SessionPlannerTest {
         assertTrue(piano.passi.any { it is Passo.EsercizioSuClip })
     }
 
+    // --- dal calendario al numero di settimana ------------------------------
+
+    @Test
+    fun `la settimana si conta dal primo giorno`() {
+        assertEquals(1, SessionPlanner.settimanaDa(oggi, oggi))
+        assertEquals(1, SessionPlanner.settimanaDa(oggi - 6, oggi))
+        assertEquals(2, SessionPlanner.settimanaDa(oggi - 7, oggi))
+        assertEquals(2, SessionPlanner.settimanaDa(oggi - 13, oggi))
+        assertEquals(3, SessionPlanner.settimanaDa(oggi - 14, oggi))
+        assertEquals(6, SessionPlanner.settimanaDa(oggi - 35, oggi))
+    }
+
+    @Test
+    fun `senza un primo giorno siamo alla settimana uno`() {
+        assertEquals(1, SessionPlanner.settimanaDa(null, oggi))
+    }
+
+    @Test
+    fun `un primo giorno nel futuro non da settimane negative`() {
+        // Puo' succedere cambiando la data del telefono: meglio la settimana 1
+        // che un numero che poi finisce in un indice.
+        assertEquals(1, SessionPlanner.settimanaDa(oggi + 10, oggi))
+    }
+
     @Test
     fun `il piano riporta fase e settimana`() {
         val piano = SessionPlanner.plan(stato(2, 6))

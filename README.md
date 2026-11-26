@@ -69,6 +69,14 @@ CI riscrive a ogni giro con `RAPPORTO.md` (errori di compilazione e test falliti
 https://raw.githubusercontent.com/zujk/fag/ci-rapporto/RAPPORTO.md
 ```
 
+Attenzione: `raw.githubusercontent.com` tiene il file in cache per qualche minuto,
+quindi subito dopo una run mostra ancora il rapporto di quella prima. Per leggere
+l'ultimo senza aspettare si passa dall'API dei contenuti, che non ha cache:
+
+```
+https://api.github.com/repos/zujk/fag/contents/RAPPORTO.md?ref=ci-rapporto
+```
+
 In locale, quando ci sarà un JDK:
 
 1. Installa Android Studio (porta JDK e SDK) oppure JDK 17 + command-line tools.

@@ -2,10 +2,10 @@ package com.studiofagnani.data
 
 import com.studiofagnani.data.db.AppDatabase
 import com.studiofagnani.data.db.AttemptEntity
-import com.studiofagnani.data.db.ClipAnalysisEntity
 import com.studiofagnani.data.db.ClipEntity
 import com.studiofagnani.data.db.ClipProgressEntity
 import com.studiofagnani.data.db.CONTEXT_HOME
+import com.studiofagnani.data.manifest.ExerciseImporter
 import com.studiofagnani.data.manifest.ManifestImporter
 import com.studiofagnani.dsp.WavIo
 import com.studiofagnani.dsp.Waveform
@@ -20,6 +20,8 @@ class ClipRepository(
     private val db: AppDatabase,
     private val files: ClipFiles,
     private val importer: ManifestImporter,
+    private val exerciseImporter: ExerciseImporter,
+    private val analisi: ClipAnalysisRepository,
 ) {
 
     private val clipDao = db.clipDao()
@@ -45,6 +47,24 @@ class ClipRepository(
     }
 
     suspend fun importManifest() = importer.importBundled()
+
+    /** Gli esercizi del riscaldamento e della fase 1 (SPEC §8). */
+    suspend fun importExercises() = exerciseImporter.importBundled()
+
+    /**
+     * L'ordine delle categorie della fase 2 come lo dà `exercises.json`.
+     * Le Impostazioni possono sovrascriverlo; vuoto significa "quello del file".
+     */
+    suspend fun phase2CategoryOrder(): List<String> = withContext(Dispatchers.IO) {
+        runCatching { exerciseImporter.read().phase2CategoryOrder }.getOrDefault(emptyList())
+    }
+
+    suspend fun exercisesForPhase(phase: Int) = withContext(Dispatchers.IO) {
+        db.exerciseDao().forPhase(phase)
+    }
+
+    /** La curva di altezza della clip, calcolata al primo uso (SPEC §4.4). */
+    suspend fun contour(clip: ClipEntity) = analisi.contour(clip)
 
     fun mediaUri(clip: ClipEntity) = files.mediaUri(clip)
 
@@ -127,15 +147,15 @@ class ClipRepository(
         files.newAttemptFile(clipId, now)
 
     /**
-     * Forma d'onda della clip per il disegno, con le misure di base in cache
-     * (durata e percentuale di parlato: SPEC §4.4 senza la parte YIN, che arriva nella v1).
+     * Forma d'onda della clip per il disegno. Le misure di §4.4 le calcola
+     * [ClipAnalysisRepository] al primo uso, non questa funzione: disegnare una
+     * forma d'onda e misurare l'altezza sono due lavori di costo molto diverso.
      */
     suspend fun waveform(clip: ClipEntity, buckets: Int): FloatArray? =
         withContext(Dispatchers.IO) {
             runCatching {
                 val audio = files.openClip(clip).buffered().use { WavIo.read(it) }
                 val peaks = Waveform.peaks(audio.samples, buckets)
-                cacheBasicMeasures(clip.id, audio)
                 peaks
             }.getOrNull()
         }
@@ -144,24 +164,6 @@ class ClipRepository(
         withContext(Dispatchers.IO) {
             runCatching { Waveform.peaks(WavIo.read(file).samples, buckets) }.getOrNull()
         }
-
-    private suspend fun cacheBasicMeasures(clipId: String, audio: WavIo.Audio) {
-        val existing = clipDao.getAnalysis(clipId)
-        if (existing?.durationS != null) return
-        clipDao.upsertAnalysis(
-            ClipAnalysisEntity(
-                clipId = clipId,
-                f0Med = existing?.f0Med,
-                f0P10 = existing?.f0P10,
-                f0P90 = existing?.f0P90,
-                f1Med = existing?.f1Med,
-                f2Med = existing?.f2Med,
-                durationS = audio.durationS,
-                voicedPct = null, // serve YIN: arriva nella v1
-                contourBlob = existing?.contourBlob,
-            ),
-        )
-    }
 
     suspend fun deleteAllRecordings(): Int = withContext(Dispatchers.IO) {
         db.attemptDao().deleteAll()
