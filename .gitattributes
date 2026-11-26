@@ -1,0 +1,7 @@
+# Sorgenti sempre con fine riga LF: il repo viene compilato su un runner Linux.
+* text=auto eol=lf
+
+*.wav binary
+*.webm binary
+*.jar binary
+*.png binary

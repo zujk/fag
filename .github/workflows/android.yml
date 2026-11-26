@@ -1,0 +1,86 @@
+name: build
+
+# Compila e lancia i test sul runner di GitHub: JDK 17 + Android SDK, che sulla
+# macchina di sviluppo non ci sono. Si usa `gradle` provvisto dal runner, non il
+# wrapper, così non c'è bisogno di tenere `gradle-wrapper.jar` (un binario) nel repo.
+#
+# Nota: i WAV delle clip non stanno nel repo, quindi l'APK prodotto qui non contiene
+# audio. Serve a verificare che il codice compili e che i test passino.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Ambiente
+        run: |
+          echo "--- java ---";   java -version
+          echo "--- gradle ---"; gradle --version
+          echo "--- sdk ---";    echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME/platforms" 2>/dev/null || echo "(nessuna platform preinstallata)"
+
+      # Un solo passaggio con --continue: così un errore non nasconde gli altri e
+      # ogni giro di CI mostra tutto quello che c'è da correggere.
+      - name: Test JVM e APK di debug
+        run: gradle test assembleDebug --continue --stacktrace -Dorg.gradle.console=plain
+
+      # Comodo per lo sviluppo in locale: il .jar del wrapper senza tenerlo nel repo.
+      - name: Wrapper Gradle
+        if: always()
+        continue-on-error: true
+        run: gradle wrapper --gradle-version 8.11.1
+
+      - name: Rapporti dei test
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapporti-test
+          path: |
+            app/build/reports/tests/
+            app/build/test-results/
+          if-no-files-found: ignore
+
+      - name: Wrapper Gradle (da copiare nel repo locale)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wrapper-gradle
+          path: |
+            gradlew
+            gradlew.bat
+            gradle/wrapper/gradle-wrapper.jar
+            gradle/wrapper/gradle-wrapper.properties
+          if-no-files-found: ignore
+
+      - name: APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-debug
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: ignore

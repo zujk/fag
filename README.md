@@ -1,0 +1,83 @@
+# Studio Fagnani — pacchetto di partenza per Claude Code
+
+Contenuto:
+- `SPEC.md` — specifica completa dell'app
+- `CLAUDE.md` — istruzioni operative per Claude Code
+- `seed/clips.json` — manifest delle 40 clip della voice bank
+- `tools/build_manifest.py` — rigenera manifest e copia gli audio dal foglio
+
+Avvio:
+1. Crea una cartella per il progetto e scompatta qui dentro questo pacchetto.
+2. Copia gli audio: `python tools/build_manifest.py C:\DEV\Claude\fff --out app/src/main/assets/clips`
+3. Apri Claude Code nella cartella e scrivi: "Leggi CLAUDE.md e SPEC.md e inizia la milestone v0."
+
+---
+
+## Stato: milestone v0
+
+Fatto (SPEC §10, v0):
+
+- **Libreria** con le 40 clip, filtri per stato, categoria, contesto, energia e Livello.
+  Riproduzione, velocità 0,75x e loop A-B trascinando sulla forma d'onda.
+- **Esercizio su clip** (SPEC §5.3, parte v0): ascolta 3 volte con pausa di 1 s → beep e
+  registrazione che si ferma da sola dopo 1,5 s di silenzio → clip e ripetizione in fila,
+  con le due forme d'onda → voto 1-5 → "Ancora" / "Prossima".
+- **Ripasso a intervalli** (SPEC §5.4) come funzione pura, con test su date finte.
+- **Oggi**: un tasto grande che apre il ripasso del giorno.
+- Tutto offline: nessun permesso INTERNET nel manifest finale (viene anche rimosso con
+  `tools:node="remove"` nel caso una libreria provi a unirlo).
+
+Rimandato alle milestone successive, come da SPEC §10: curve di altezza con YIN e
+confronto DTW, riscontro in parole, percorso guidato con fasi e domanda sulla fatica (v1);
+modalità macchina e treno (v2); formanti, controllo della domenica, aggiungi/importa/esporta
+clip e backup zip (v3). `assets/exercises.json` arriva con la v1, insieme al riscaldamento.
+
+### Clip audio — non stanno nel repo
+
+Nel repo ci sono **solo i metadati** (`app/src/main/assets/clips/clips.json`). I WAV sono
+spezzoni di trasmissioni televisive, materiale di terzi che non va distribuito, quindi
+`.gitignore` li esclude. Si mettono in locale con:
+
+```
+python tools/build_manifest.py C:\DEV\Claude\fff --out app/src/main/assets/clips
+```
+
+Conseguenza: l'APK che costruisce la CI **non contiene clip**. Serve a verificare che il
+codice compili e che i test passino; l'APK da usare si costruisce in locale, con l'audio
+al suo posto.
+
+Una clip con `audio_present: false` o con il file mancante si importa ma resta nascosta, e
+viene contata in un avviso in Libreria e in Oggi: è il percorso che si vede quando gli
+asset non sono stati rigenerati.
+
+### Come compilare
+
+Serve **JDK 17** e l'**Android SDK** (API 35). Sulla macchina di sviluppo non ci sono,
+quindi a compilare ci pensa la CI di GitHub (`.github/workflows/android.yml`): usa il
+`gradle` del runner, quindi non serve tenere `gradle-wrapper.jar` nel repo, e carica come
+artefatti i rapporti dei test, l'APK e il wrapper generato.
+
+In locale, quando ci sarà un JDK:
+
+1. Installa Android Studio (porta JDK e SDK) oppure JDK 17 + command-line tools.
+2. Scrivi `local.properties` con `sdk.dir=C\:\\percorso\\Android\\Sdk`.
+3. Prendi `gradlew`, `gradlew.bat` e `gradle/wrapper/gradle-wrapper.jar` dall'artefatto
+   `wrapper-gradle` dell'ultima run, oppure genera il wrapper con
+   `gradle wrapper --gradle-version 8.11.1`, oppure apri la cartella in Android Studio,
+   che lo crea da sé.
+4. Poi, come dice `CLAUDE.md`:
+
+```
+./gradlew test
+./gradlew assembleDebug
+```
+
+### Test (JVM, senza emulatore)
+
+| File | Cosa copre |
+| --- | --- |
+| `session/SpacedRepetitionTest` | intervalli per Livello, limite di 6 clip, precedenza della categoria della settimana, esclusione di clip nascoste e sospette, date finte |
+| `audio/SilenceDetectorTest` | stop dopo 1,5 s di silenzio, pause brevi che non fermano, tetto di durata, taratura del rumore di fondo |
+| `dsp/WavIoTest` | scrittura/rilettura di segnali sintetici, intestazione, writer incrementale, file troncati, chunk sconosciuti, stereo→mono, e un controllo sui 40 WAV veri |
+| `dsp/WaveformTest` | inviluppo, RMS su float e su PCM 16 bit, casi limite |
+| `data/ManifestMergeTest` | l'import non tocca mai i progressi, clip senza audio nascoste, misure del foglio, campi sconosciuti ignorati, manifest vero con 40 clip |
