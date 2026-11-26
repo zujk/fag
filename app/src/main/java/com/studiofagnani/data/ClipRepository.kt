@@ -318,6 +318,11 @@ class ClipRepository(
         }.getOrNull()
     }
 
+    /** Quante ripetizioni sono salvate: le Impostazioni lo dicono prima di cancellare. */
+    suspend fun countRecordings(): Int = withContext(Dispatchers.IO) {
+        attemptDao.allWavPaths().size
+    }
+
     suspend fun deleteAllRecordings(): Int = withContext(Dispatchers.IO) {
         db.attemptDao().deleteAll()
         files.deleteAllAttempts()

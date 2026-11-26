@@ -386,4 +386,51 @@ class SessionPlannerTest {
         assertEquals(2, piano.phase)
         assertEquals(6, piano.week)
     }
+
+    // --- la fase suggerita (SPEC §5.1) --------------------------------------
+
+    @Test
+    fun `la fase suggerita segue le settimane`() {
+        assertEquals(0, SessionPlanner.faseSuggerita(1))
+        assertEquals(1, SessionPlanner.faseSuggerita(2))
+        assertEquals(1, SessionPlanner.faseSuggerita(3))
+        // Dalla settimana 4 le fasi 1 e 2 si sovrappongono: si propone la piu' avanzata,
+        // perche' la sessione della fase 2 contiene gia' gli esercizi della fase 1.
+        assertEquals(2, SessionPlanner.faseSuggerita(4))
+        assertEquals(2, SessionPlanner.faseSuggerita(8))
+        assertEquals(2, SessionPlanner.faseSuggerita(12))
+        assertEquals(3, SessionPlanner.faseSuggerita(13))
+        assertEquals(3, SessionPlanner.faseSuggerita(26))
+        assertEquals(4, SessionPlanner.faseSuggerita(27))
+        assertEquals(4, SessionPlanner.faseSuggerita(300))
+    }
+
+    @Test
+    fun `la fase suggerita non va mai fuori scala`() {
+        for (settimana in -5..400) {
+            val fase = SessionPlanner.faseSuggerita(settimana)
+            assertTrue("settimana $settimana da' fase $fase", fase in 0..4)
+        }
+    }
+
+    @Test
+    fun `la fase suggerita non torna mai indietro`() {
+        var precedente = 0
+        for (settimana in 1..400) {
+            val fase = SessionPlanner.faseSuggerita(settimana)
+            assertTrue("alla settimana $settimana si torna da $precedente a $fase",
+                fase >= precedente)
+            precedente = fase
+        }
+    }
+
+    @Test
+    fun `ogni fase ha un nome leggibile`() {
+        for (fase in 0..4) {
+            val nome = SessionPlanner.nomeFase(fase)
+            assertTrue("fase $fase senza nome", nome.isNotBlank())
+            assertTrue("il nome della fase $fase non la cita", nome.startsWith("$fase"))
+        }
+        assertTrue(SessionPlanner.nomeFase(99).isNotBlank())
+    }
 }

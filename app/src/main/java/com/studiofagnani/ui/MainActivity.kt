@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,6 +41,8 @@ import com.studiofagnani.ui.practice.PracticeScreen
 import com.studiofagnani.ui.practice.PracticeViewModel
 import com.studiofagnani.ui.session.SessionScreen
 import com.studiofagnani.ui.session.SessionViewModel
+import com.studiofagnani.ui.settings.SettingsScreen
+import com.studiofagnani.ui.settings.SettingsViewModel
 import com.studiofagnani.ui.theme.StudioFagnaniTheme
 import com.studiofagnani.ui.today.TodayScreen
 import com.studiofagnani.ui.today.TodayViewModel
@@ -61,6 +64,7 @@ class MainActivity : ComponentActivity() {
 private object Rotte {
     const val OGGI = "oggi"
     const val LIBRERIA = "libreria"
+    const val IMPOSTAZIONI = "impostazioni"
     const val SESSIONE = "sessione"
     const val CLIP = "clip/{clipId}"
     const val ESERCIZIO = "esercizio/{coda}"
@@ -77,7 +81,8 @@ private fun AppNav(container: AppContainer) {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val rotta = entry?.destination?.route
-    val mostraBarra = rotta == Rotte.OGGI || rotta == Rotte.LIBRERIA
+    val mostraBarra = rotta == Rotte.OGGI || rotta == Rotte.LIBRERIA ||
+        rotta == Rotte.IMPOSTAZIONI
 
     Scaffold(
         topBar = {
@@ -116,6 +121,12 @@ private fun AppNav(container: AppContainer) {
                         icon = { Icon(Icons.Filled.LibraryMusic, contentDescription = null) },
                         label = { Text("Libreria") },
                     )
+                    NavigationBarItem(
+                        selected = destinazioni?.any { it.route == Rotte.IMPOSTAZIONI } == true,
+                        onClick = { nav.navigateTab(Rotte.IMPOSTAZIONI) },
+                        icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+                        label = { Text("Impostazioni") },
+                    )
                 }
             }
         },
@@ -135,6 +146,13 @@ private fun AppNav(container: AppContainer) {
                     },
                     onVaiInLibreria = { nav.navigateTab(Rotte.LIBRERIA) },
                 )
+            }
+
+            composable(Rotte.IMPOSTAZIONI) {
+                val vm: SettingsViewModel = viewModel(
+                    factory = SettingsViewModel.factory(container),
+                )
+                SettingsScreen(vm = vm)
             }
 
             composable(Rotte.SESSIONE) {

@@ -9,6 +9,23 @@ package com.studiofagnani.session
  */
 object SessionPlanner {
 
+    /** Ultima settimana della fase 2 (SPEC §5.1: settimane 4-12). */
+    const val SETTIMANA_FINE_FASE2 = 12
+
+    /** Ultima settimana della fase 3 (SPEC §5.1: mesi 3-6, cioe' 26 settimane). */
+    const val SETTIMANA_FINE_FASE3 = 26
+
+    /** Nomi delle fasi come li vede Ziv (SPEC §5.1), per le Impostazioni. */
+    val NOMI_FASI = listOf(
+        "0 · Misura",
+        "1 · Supporto",
+        "2 · Stile a frasi",
+        "3 · Shadowing",
+        "4 · Uso quotidiano",
+    )
+
+    fun nomeFase(fase: Int): String = NOMI_FASI.getOrElse(fase.coerceIn(0, 4)) { "Fase $fase" }
+
     /** Come e' andata la voce alla fine di una sessione (SPEC §5.2, chiusura). */
     enum class Fatica { OK, STANCA, AFFATICATA }
 
@@ -85,6 +102,21 @@ object SessionPlanner {
     fun settimanaDa(primoGiorno: Long?, oggi: Long): Int {
         if (primoGiorno == null || oggi < primoGiorno) return 1
         return ((oggi - primoGiorno) / 7 + 1).toInt()
+    }
+
+    /**
+     * La fase che l'app **suggerisce** per questa settimana (SPEC §5.1).
+     *
+     * Solo un suggerimento: il passaggio lo conferma sempre Ziv dalle Impostazioni.
+     * Dove le fasi si sovrappongono si propone la più avanzata, perché la sessione
+     * della fase 2 contiene già gli esercizi della fase 1 fino alla settimana 8.
+     */
+    fun faseSuggerita(settimana: Int, soglie: SoglieSessione = SoglieSessione()): Int = when {
+        settimana <= 1 -> 0
+        settimana < soglie.settimanaInizioFase2 -> 1
+        settimana <= SETTIMANA_FINE_FASE2 -> 2
+        settimana <= SETTIMANA_FINE_FASE3 -> 3
+        else -> 4
     }
 
     fun plan(stato: Stato, soglie: SoglieSessione = SoglieSessione()): Piano {
