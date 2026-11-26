@@ -202,11 +202,21 @@ class ManifestMergeTest {
      * soli metadati. L'asserzione resta vera in entrambi i casi, perché controlla che
      * le clip nascoste siano esattamente quelle il cui file manca davvero.
      */
+    /**
+     * Gli asset sono nel repo, quindi se non si trovano il test deve fallire, non
+     * uscire in silenzio: un test che non asserisce niente e' peggio di nessun test.
+     * Il percorso dipende da dove gira Gradle, quindi si provano i due soliti.
+     */
+    private fun asset(nome: String): File =
+        listOf(File("src/main/assets/$nome"), File("app/src/main/assets/$nome"))
+            .firstOrNull { it.isFile }
+            ?: throw AssertionError(
+                "asset non trovato: $nome (cartella di lavoro ${File(".").absolutePath})",
+            )
+
     @Test
     fun `il manifest della voice bank si legge e descrive 40 clip`() {
-        val f = File("src/main/assets/clips/clips.json").takeIf { it.isFile }
-            ?: File("app/src/main/assets/clips/clips.json").takeIf { it.isFile }
-            ?: return
+        val f = asset("clips/clips.json")
         val m = manifestJson.decodeFromString<ClipsManifest>(f.readText())
         assertEquals(1, m.schemaVersion)
         assertEquals(8, m.categories.size)

@@ -141,11 +141,21 @@ class ExerciseMergeTest {
 
     // --- il file vero degli asset -------------------------------------------
 
+    /**
+     * Gli asset sono nel repo, quindi se non si trovano il test deve fallire, non
+     * uscire in silenzio: un test che non asserisce niente e' peggio di nessun test.
+     * Il percorso dipende da dove gira Gradle, quindi si provano i due soliti.
+     */
+    private fun asset(nome: String): File =
+        listOf(File("src/main/assets/$nome"), File("app/src/main/assets/$nome"))
+            .firstOrNull { it.isFile }
+            ?: throw AssertionError(
+                "asset non trovato: $nome (cartella di lavoro ${File(".").absolutePath})",
+            )
+
     @Test
     fun `il file degli esercizi degli asset e completo e sensato`() {
-        val f = File("src/main/assets/exercises.json").takeIf { it.isFile }
-            ?: File("app/src/main/assets/exercises.json").takeIf { it.isFile }
-            ?: return
+        val f = asset("exercises.json")
         val file = manifestJson.decodeFromString<ExercisesFile>(f.readText())
         val p = ExerciseMerge.plan(file)
 
@@ -179,11 +189,8 @@ class ExerciseMergeTest {
 
     @Test
     fun `l'ordine delle categorie degli asset copre le categorie delle clip`() {
-        val esercizi = File("src/main/assets/exercises.json").takeIf { it.isFile }
-            ?: File("app/src/main/assets/exercises.json").takeIf { it.isFile }
-            ?: return
-        val clips = File(esercizi.parentFile, "clips/clips.json")
-        if (!clips.isFile) return
+        val esercizi = asset("exercises.json")
+        val clips = asset("clips/clips.json")
 
         val ordine = manifestJson
             .decodeFromString<ExercisesFile>(esercizi.readText())
