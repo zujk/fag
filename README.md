@@ -1,4 +1,4 @@
-# Studio Fagnani — pacchetto di partenza per Claude Code
+# Studio — pacchetto di partenza per Claude Code
 
 Contenuto:
 - `SPEC.md` — specifica completa dell'app
